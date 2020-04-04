@@ -1,0 +1,12 @@
+name: "Stats Group"
+author: "Kyla McConnell"
+output_dir: "docs"
+output:
+  html_document:
+    self_contained: no
+    theme: flatly
+navbar:
+  title: "Stats Group"
+  left:
+    - text: "Home"
+      href: index.html
