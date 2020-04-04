@@ -1,4 +1,12 @@
 # Notes and resources by topic
 
-- Statistical thinking 
-- Descriptive statistics
+- Principles of frequentist statistics
+- Data wrangling
+- Model assumptions
+- Graphing with ggplot
+- Correlation
+- Comparing means: t-test
+- Comparing group means: ANOVA
+- Tests of independence:chi-square
+- Regression
+- Logistic Regression
