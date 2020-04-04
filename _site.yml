@@ -10,3 +10,7 @@ navbar:
   left:
     - text: "Home"
       href: index.html
+    - text: "Notes & Exercises"
+      href: bytopic.html
+    - text: "Calendar"
+      href: calendar.html

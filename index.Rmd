@@ -1,1 +1,16 @@
-Coming soon
+
+## Stats Group
+
+### For linguists and other enthusiasts
+
+![](img/computer.jpg)
+
+Have you always wanted to improve your statistical analysis skills? Have you downloaded R, but never opened it? Do your hands start to sweat when you're just thinking about math?
+
+If you've answered 'yes' to at least one of these questions, fear no more! The statistics study group is here to help!
+
+We're a group of MA students, PhDs and Postdocs who meet up regularly to read about and practice statistics together. We're based in Freiburg, Germany, but now putting our resources online for a wider reach. 
+
+The group is moderated by [Kyla McConnell](https://kyla-mcconnell.github.io/website/index.html) and Julia Müller. Find us on Twitter [here](https://twitter.com/McconnellKyla) and [here](https://twitter.com/JuliaMl94290124) and Kyla on Github [here](https://github.com/kyla-mcconnell).
+
+A big shoutout to [R Ladies Freiburg](https://www.meetup.com/rladies-freiburg/)!

@@ -1,0 +1,4 @@
+# Notes and resources by topic
+
+- Statistical thinking 
+- Descriptive statistics
