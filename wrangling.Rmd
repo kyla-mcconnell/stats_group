@@ -2,10 +2,6 @@
 title: "Data Wrangling with tidyverse"
 author: "Kyla McConnell"
 date: "6/13/2019"
-output:
- html_notebook:
-    toc: true
-    theme: cosmo
 ---
 
 # Data Wrangling with tidyverse
