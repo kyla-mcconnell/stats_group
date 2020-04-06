@@ -8,10 +8,10 @@ output:
     theme: cosmo
 ---
 
-#Data Wrangling with tidyverse
+# Data Wrangling with tidyverse
 These notes and excercises come directly from [Chapter 5 of R for Data Science](https://r4ds.had.co.nz/transform.html) & [12](https://r4ds.had.co.nz/tidy-data.html) & Lisa DeBruine & Dale Barr's Data Skills [Part 5](https://gupsych.github.io/data_skills/05_wrangling.html). These notes are meant to accompany, not replace, these great resources!
 
-##Setup
+## Setup
 ```{r setup}
 library(tidyverse)
 library(nycflights13) #for flights data
@@ -19,7 +19,7 @@ library(nycflights13) #for flights data
 flights <- flights #from the nycflights13 package
 ```
 
-#Data transformation
+# Data transformation
 
 Note that many of these changes would have to be saved back to the original dataframe to take permanent effect and are just shown here as temporary outputs. 
 
@@ -30,7 +30,7 @@ Ex to save permanently:
 
 Also note that many calls end with head() so that only the first 5 rows are printed.
 
-##filter()
+## filter()
 `filter()`returns the values that match your criteria.
 
 You can use the logical operators >, >=, <, <=, !=, ==
@@ -67,7 +67,7 @@ flights %>%
   head() #restrict to first five lines
 ```
 
-###between()
+### between()
 A useful filtering helper is between(). It is a shortcut for for x >= left & x <= right.
 
 Syntax: between(x, left, right) 
@@ -76,7 +76,7 @@ Example:
 `ukb %>%
   filter(sex == "M", name == "Courtney", between(year, 1998, 2001))`
 
-##arrange()
+## arrange()
 `arrange()` orders the values of the columns. If you give more than one column, the following column will be the tiebreaker for preceding columns. 
 
 Use desc(COLUMNNAME) to arrange in descending order
@@ -90,7 +90,7 @@ arrange(flights, year, month, day) %>%
 ```
 Note: NAs go at the end by default. 
 
-##select()
+## select()
 `select()` gives you the table with the columns you provide, in that order. It will only return the selected columns and can be used to subset several columns.
 
 You can use multiple functions with `select()`
@@ -119,11 +119,11 @@ select(flights, time_hour, air_time, everything()) %>%
   head()
 ```
 
-##rename()
+## rename()
 Renames columns. 
 Ex: `rename(flights, tail_num = tailnum)` renames the column 'tailnum' to 'tail_num'.
 
-##mutate()
+## mutate()
 `mutate()` creates a new column that can be a function of another column. The new columnns are added to the left. 
 
 You can use:
@@ -140,7 +140,7 @@ flights %>%
   head()
 ```
 
-###transmute()
+### transmute()
 `transmute()` is similiar to mutate but keeps only the new columns you create and deletes the others.
 
 ```{r}
@@ -153,7 +153,7 @@ flights %>%
   head()
 ```
 
-##summarise() and group_by()
+## summarise() and group_by()
 `summarise()` collaspes a dataframe into a single row. It is most useful when used with `group_by()`, which allows you to look at different groups. 
 
 Some things you can summarise include:
@@ -217,7 +217,7 @@ not_cancelled %>%
   head()
 ```
 
-###count()
+### count()
 Returns a count of all unique options.
 ```{r}
 not_cancelled %>% 
@@ -232,10 +232,10 @@ not_cancelled %>%
   head()
 ```
 
-##ungroup()
+## ungroup()
 To undo the grouping use `ungroup()`. This is useful when you want to create a new column by calculating a group variable, then want to return to original rows for further steps.
 
-##ggplot
+## ggplot
 You can also include ggplot in dplyr piped sequences to take a look at data. Just note that ggplot doesn't use pipes but rather + 
 ```{r}
 flights %>% 

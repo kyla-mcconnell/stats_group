@@ -300,17 +300,25 @@ $(document).ready(function () {
 </div>
 
 
-<p>#Data Wrangling with tidyverse These notes and excercises come directly from <a href="https://r4ds.had.co.nz/transform.html">Chapter 5 of R for Data Science</a> &amp; <a href="https://r4ds.had.co.nz/tidy-data.html">12</a> &amp; Lisa DeBruine &amp; Dale Barr’s Data Skills <a href="https://gupsych.github.io/data_skills/05_wrangling.html">Part 5</a>. These notes are meant to accompany, not replace, these great resources!</p>
-<p>##Setup</p>
+<div id="data-wrangling-with-tidyverse" class="section level1">
+<h1>Data Wrangling with tidyverse</h1>
+<p>These notes and excercises come directly from <a href="https://r4ds.had.co.nz/transform.html">Chapter 5 of R for Data Science</a> &amp; <a href="https://r4ds.had.co.nz/tidy-data.html">12</a> &amp; Lisa DeBruine &amp; Dale Barr’s Data Skills <a href="https://gupsych.github.io/data_skills/05_wrangling.html">Part 5</a>. These notes are meant to accompany, not replace, these great resources!</p>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
 <pre class="r"><code>library(tidyverse)
 library(nycflights13) #for flights data
 
 flights &lt;- flights #from the nycflights13 package</code></pre>
-<p>#Data transformation</p>
+</div>
+</div>
+<div id="data-transformation" class="section level1">
+<h1>Data transformation</h1>
 <p>Note that many of these changes would have to be saved back to the original dataframe to take permanent effect and are just shown here as temporary outputs.</p>
 <p>Ex to save permanently: <code>flights &lt;- flights %&gt;%</code> <code>filter(month == 1, day == 1)</code></p>
 <p>Also note that many calls end with head() so that only the first 5 rows are printed.</p>
-<p>##filter() <code>filter()</code>returns the values that match your criteria.</p>
+<div id="filter" class="section level2">
+<h2>filter()</h2>
+<p><code>filter()</code>returns the values that match your criteria.</p>
 <p>You can use the logical operators &gt;, &gt;=, &lt;, &lt;=, !=, ==</p>
 <p>You can combine logical operators with <code>&amp;</code>, <code>|</code> and <code>!</code> (<em>and</em>, <em>or</em>, and <em>not</em>) Note: !(x &amp; y) is the same as !x | !y, and !(x | y) is the same as !x &amp; !y</p>
 <p>If you are using a value with a lot of decimals, use <code>near()</code> to allow R to approximate the number i.e. <code>col1 == near(sqrt(2) ^ 2,  2))</code></p>
@@ -392,10 +400,16 @@ flights &lt;- flights #from the nycflights13 package</code></pre>
 ## # … with 11 more variables: arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;,
 ## #   tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;,
 ## #   hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
-<p>###between() A useful filtering helper is between(). It is a shortcut for for x &gt;= left &amp; x &lt;= right.</p>
+<div id="between" class="section level3">
+<h3>between()</h3>
+<p>A useful filtering helper is between(). It is a shortcut for for x &gt;= left &amp; x &lt;= right.</p>
 <p>Syntax: between(x, left, right)</p>
 <p>Example: <code>ukb %&gt;%   filter(sex == &quot;M&quot;, name == &quot;Courtney&quot;, between(year, 1998, 2001))</code></p>
-<p>##arrange() <code>arrange()</code> orders the values of the columns. If you give more than one column, the following column will be the tiebreaker for preceding columns.</p>
+</div>
+</div>
+<div id="arrange" class="section level2">
+<h2>arrange()</h2>
+<p><code>arrange()</code> orders the values of the columns. If you give more than one column, the following column will be the tiebreaker for preceding columns.</p>
 <p>Use desc(COLUMNNAME) to arrange in descending order</p>
 <pre class="r"><code>arrange(flights, desc(dep_delay)) %&gt;%
   head() #returns the flights df sorted by dep_delay in descending order</code></pre>
@@ -426,7 +440,10 @@ flights &lt;- flights #from the nycflights13 package</code></pre>
 ## #   tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;,
 ## #   hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;</code></pre>
 <p>Note: NAs go at the end by default.</p>
-<p>##select() <code>select()</code> gives you the table with the columns you provide, in that order. It will only return the selected columns and can be used to subset several columns.</p>
+</div>
+<div id="select" class="section level2">
+<h2>select()</h2>
+<p><code>select()</code> gives you the table with the columns you provide, in that order. It will only return the selected columns and can be used to subset several columns.</p>
 <p>You can use multiple functions with <code>select()</code> <code>starts_with(&quot;&quot;)</code> <code>ends_with(&quot;&quot;)</code> <code>contains(&quot;&quot;)</code> <code>matches(&quot;&quot;)</code>(takes regular expressions) <code>num_range(&quot;x&quot;, 1:3)</code> (matches x1, x2, x3) <code>one_of()</code> “matches variable names in a character vector”</p>
 <pre class="r"><code>flights %&gt;%
   select(year, month, day)</code></pre>
@@ -475,8 +492,14 @@ flights &lt;- flights #from the nycflights13 package</code></pre>
 ## #   sched_arr_time &lt;int&gt;, arr_delay &lt;dbl&gt;, carrier &lt;chr&gt;, flight &lt;int&gt;,
 ## #   tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;,
 ## #   minute &lt;dbl&gt;</code></pre>
-<p>##rename() Renames columns. Ex: <code>rename(flights, tail_num = tailnum)</code> renames the column ‘tailnum’ to ‘tail_num’.</p>
-<p>##mutate() <code>mutate()</code> creates a new column that can be a function of another column. The new columnns are added to the left.</p>
+</div>
+<div id="rename" class="section level2">
+<h2>rename()</h2>
+<p>Renames columns. Ex: <code>rename(flights, tail_num = tailnum)</code> renames the column ‘tailnum’ to ‘tail_num’.</p>
+</div>
+<div id="mutate" class="section level2">
+<h2>mutate()</h2>
+<p><code>mutate()</code> creates a new column that can be a function of another column. The new columnns are added to the left.</p>
 <p>You can use: -arithmetic operators: <code>+</code>, <code>-</code>, <code>*</code>, <code>x/sum(x)</code> (proportion), <code>x - mean(x)</code> (diff. from mean), <code>%/%</code> (integer rounding), <code>%%</code> (modulo), <code>log2()</code>, etc. -logical comparisons: <code>==</code>, <code>!=</code>, <code>&lt;=</code>, etc. -other: <code>min_rank</code>, <code>max_rank</code>, <code>cumsum</code>, <code>cummean</code>, <code>ntile</code>, <code>row_number()</code></p>
 <pre class="r"><code>flights %&gt;%
   mutate(
@@ -497,7 +520,9 @@ flights &lt;- flights #from the nycflights13 package</code></pre>
 ## #   tailnum &lt;chr&gt;, origin &lt;chr&gt;, dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;,
 ## #   hour &lt;dbl&gt;, minute &lt;dbl&gt;, time_hour &lt;dttm&gt;, gain &lt;dbl&gt;, hours &lt;dbl&gt;,
 ## #   gain_per_hour &lt;dbl&gt;</code></pre>
-<p>###transmute() <code>transmute()</code> is similiar to mutate but keeps only the new columns you create and deletes the others.</p>
+<div id="transmute" class="section level3">
+<h3>transmute()</h3>
+<p><code>transmute()</code> is similiar to mutate but keeps only the new columns you create and deletes the others.</p>
 <pre class="r"><code>flights %&gt;%
   transmute(
     dep_time,
@@ -514,7 +539,11 @@ flights &lt;- flights #from the nycflights13 package</code></pre>
 ## 4      544     5     44
 ## 5      554     5     54
 ## 6      554     5     54</code></pre>
-<p>##summarise() and group_by() <code>summarise()</code> collaspes a dataframe into a single row. It is most useful when used with <code>group_by()</code>, which allows you to look at different groups.</p>
+</div>
+</div>
+<div id="summarise-and-group_by" class="section level2">
+<h2>summarise() and group_by()</h2>
+<p><code>summarise()</code> collaspes a dataframe into a single row. It is most useful when used with <code>group_by()</code>, which allows you to look at different groups.</p>
 <p>Some things you can summarise include: -<code>mean()</code>, <code>median()</code>, <code>sd()</code> -<code>min()</code>, <code>max()</code> -<code>x[length(x)]</code> (last in the range) -<code>IQR()</code> interquartile range -<code>quantile(x, 0.25)</code> will find a value of the 25th quantile -Measures of position: <code>first(x)</code>, <code>nth(x, 2)</code>, <code>last(x)</code> -Count: <code>n()</code> -Count NAs: <code>sum(!is.na(x))</code> -Count uniques: <code>n_distinct(x)</code></p>
 <pre class="r"><code>flights %&gt;%
   group_by(year, month, day) %&gt;%
@@ -597,7 +626,9 @@ not_cancelled %&gt;%
 ## 4  2013     1     4       3
 ## 5  2013     1     5       3
 ## 6  2013     1     6       2</code></pre>
-<p>###count() Returns a count of all unique options.</p>
+<div id="count" class="section level3">
+<h3>count()</h3>
+<p>Returns a count of all unique options.</p>
 <pre class="r"><code>not_cancelled %&gt;% 
   count(dest) %&gt;%
   head()</code></pre>
@@ -623,14 +654,23 @@ not_cancelled %&gt;%
 ## 4 N102UW   25722
 ## 5 N103US   24619
 ## 6 N104UW   24616</code></pre>
-<p>##ungroup() To undo the grouping use <code>ungroup()</code>. This is useful when you want to create a new column by calculating a group variable, then want to return to original rows for further steps.</p>
-<p>##ggplot You can also include ggplot in dplyr piped sequences to take a look at data. Just note that ggplot doesn’t use pipes but rather +</p>
+</div>
+</div>
+<div id="ungroup" class="section level2">
+<h2>ungroup()</h2>
+<p>To undo the grouping use <code>ungroup()</code>. This is useful when you want to create a new column by calculating a group variable, then want to return to original rows for further steps.</p>
+</div>
+<div id="ggplot" class="section level2">
+<h2>ggplot</h2>
+<p>You can also include ggplot in dplyr piped sequences to take a look at data. Just note that ggplot doesn’t use pipes but rather +</p>
 <pre class="r"><code>flights %&gt;% 
   filter(carrier %in% c(&quot;AA&quot;, &quot;DL&quot;, &quot;UA&quot;, &quot;US&quot;)) %&gt;% 
   ggplot(mapping = aes(x = carrier, y = dep_delay, fill = carrier)) + 
     geom_bar(stat=&quot;identity&quot;)</code></pre>
 <pre><code>## Warning: Removed 2334 rows containing missing values (position_stack).</code></pre>
 <p><img src="wrangling_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+</div>
+</div>
 
 
 
