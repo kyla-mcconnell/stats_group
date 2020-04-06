@@ -1,7 +1,11 @@
-# Notes and resources by topic
+<title>Resources</title><font size = 4>
+<br>
+### Notes and resources by topic
 
 - Principles of frequentist statistics
 - Data wrangling
+    - [Notes P1: Subsets, new columns, summary variables](wrangling.html)
+    - Notes P2: Tidy data, splitting and pivoting columns - Coming soon.
 - Model assumptions
 - Graphing with ggplot
 - Correlation
@@ -10,3 +14,5 @@
 - Tests of independence:chi-square
 - Regression
 - Logistic Regression
+
+</font>

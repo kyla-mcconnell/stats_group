@@ -1,0 +1,245 @@
+---
+title: "Data Wrangling with tidyverse"
+author: "Kyla McConnell"
+date: "6/13/2019"
+output:
+ html_notebook:
+    toc: true
+    theme: cosmo
+---
+
+#Data Wrangling with tidyverse
+These notes and excercises come directly from [Chapter 5 of R for Data Science](https://r4ds.had.co.nz/transform.html) & [12](https://r4ds.had.co.nz/tidy-data.html) & Lisa DeBruine & Dale Barr's Data Skills [Part 5](https://gupsych.github.io/data_skills/05_wrangling.html). These notes are meant to accompany, not replace, these great resources!
+
+##Setup
+```{r setup}
+library(tidyverse)
+library(nycflights13) #for flights data
+
+flights <- flights #from the nycflights13 package
+```
+
+#Data transformation
+
+Note that many of these changes would have to be saved back to the original dataframe to take permanent effect and are just shown here as temporary outputs. 
+
+Ex to save permanently: 
+`flights <- flights %>%`
+  `filter(month == 1, day == 1)`
+  
+
+Also note that many calls end with head() so that only the first 5 rows are printed.
+
+##filter()
+`filter()`returns the values that match your criteria.
+
+You can use the logical operators >, >=, <, <=, !=, ==
+
+You can combine logical operators with `&`, `|` and `!` (*and*, *or*, and *not*)
+Note: !(x & y) is the same as !x | !y, and !(x | y) is the same as !x & !y
+
+If you are using a value with a lot of decimals, use `near()` to allow R to approximate the number i.e. `col1 == near(sqrt(2) ^ 2,  2))`
+
+Arguments:
+1. column1 (logical operator) outcome to match
+2. opt: column 2 (logical operator) outcome to match
+
+```{r}
+flights %>%
+  filter(month == 1, day == 1) #returns all flights on January 1st
+
+filter(flights, month == 11 | month == 12) #returns all flights in November or December
+
+flights %>%
+  filter(arr_delay >= 120 & dep_delay == 0) #returns all flights with an arival delay of greater than or equal to 120min and  departure delay of 0
+```
+
+Another option is `%in%`, which selects every row where x is one of the values of y.
+```{r}
+filter(flights, month %in% c(11, 12)) %>%
+  head() #returns first five lines of flights in November and December
+```
+
+`filter()` can also be used to show NAs in combination with the is.na() function.
+```{r}
+flights %>%
+  filter(is.na(dep_time)) %>%
+  head() #restrict to first five lines
+```
+
+###between()
+A useful filtering helper is between(). It is a shortcut for for x >= left & x <= right.
+
+Syntax: between(x, left, right) 
+
+Example:
+`ukb %>%
+  filter(sex == "M", name == "Courtney", between(year, 1998, 2001))`
+
+##arrange()
+`arrange()` orders the values of the columns. If you give more than one column, the following column will be the tiebreaker for preceding columns. 
+
+Use desc(COLUMNNAME) to arrange in descending order
+
+```{r}
+arrange(flights, desc(dep_delay)) %>%
+  head() #returns the flights df sorted by dep_delay in descending order
+
+arrange(flights, year, month, day) %>%
+  head()
+```
+Note: NAs go at the end by default. 
+
+##select()
+`select()` gives you the table with the columns you provide, in that order. It will only return the selected columns and can be used to subset several columns.
+
+You can use multiple functions with `select()`
+`starts_with("")`
+`ends_with("")`
+`contains("")`
+`matches("")`(takes regular expressions)
+`num_range("x", 1:3)` (matches x1, x2, x3)
+`one_of()` "matches variable names in a character vector"
+
+```{r}
+flights %>%
+  select(year, month, day)
+```
+
+You can also select or deselect a range of columns with a colon (:). You can also remove columns by preceding them with minus (-).
+```{r}
+select(flights, -(year:day)) %>%
+  head()
+```
+
+`select()` will only return the columns you explicitly list, unless you use `everything()`
+Using this can be useful just for reordering columns without excluding anything.
+```{r}
+select(flights, time_hour, air_time, everything()) %>%
+  head()
+```
+
+##rename()
+Renames columns. 
+Ex: `rename(flights, tail_num = tailnum)` renames the column 'tailnum' to 'tail_num'.
+
+##mutate()
+`mutate()` creates a new column that can be a function of another column. The new columnns are added to the left. 
+
+You can use:
+-arithmetic operators: `+`, `-`, `*`, `x/sum(x)` (proportion), `x - mean(x)` (diff. from mean), `%/%` (integer rounding), `%%` (modulo), `log2()`, etc.
+-logical comparisons: `==`, `!=`, `<=`, etc. 
+-other: `min_rank`, `max_rank`, `cumsum`, `cummean`, `ntile`, `row_number()`
+
+```{r}
+flights %>%
+  mutate(
+    gain = dep_delay - arr_delay,
+    hours = air_time / 60,
+    gain_per_hour = gain / hours) %>%
+  head()
+```
+
+###transmute()
+`transmute()` is similiar to mutate but keeps only the new columns you create and deletes the others.
+
+```{r}
+flights %>%
+  transmute(
+    dep_time,
+    hour = dep_time %/% 100,
+    minute = dep_time %% 100
+    ) %>%
+  head()
+```
+
+##summarise() and group_by()
+`summarise()` collaspes a dataframe into a single row. It is most useful when used with `group_by()`, which allows you to look at different groups. 
+
+Some things you can summarise include:
+-`mean()`, `median()`, `sd()`
+-`min()`, `max()` 
+-`x[length(x)]` (last in the range)
+-`IQR()` interquartile range
+-`quantile(x, 0.25)` will find a value of the 25th quantile
+-Measures of position: `first(x)`, `nth(x, 2)`, `last(x)`
+-Count: `n()`
+-Count NAs: `sum(!is.na(x))`
+-Count uniques: `n_distinct(x)`
+
+```{r}
+flights %>%
+  group_by(year, month, day) %>%
+  summarise(delay = mean(dep_delay, na.rm = TRUE)) %>%
+  head()
+```
+Note that `na.rm = TRUE` is really important here, or else the mean for any group with any NA in the column dep_delay would be NA!
+
+When you use `groupby()`, it's helpful to include the count `n()` to get an idea for the scale that you're looking at. For example, to know if you're looking at a mean of 4 datapoints or 4000.
+
+```{r}
+not_cancelled <- flights %>% 
+  filter(!is.na(dep_delay), !is.na(arr_delay)) #make a subset of flights that were not cancelled, save it as a new df
+
+not_cancelled %>%
+  group_by(tailnum) %>% 
+  summarise(
+    delay = mean(arr_delay, na.rm = TRUE),
+    n = n()
+  ) %>%
+  head()#shows the tail number, the mean delay and the number of items with that tail number for the first 5 rows
+```
+Note that we first removed NAs systematically to better work with the data.
+
+Another example, here we summarize the average sandard deviation by destination arranged in descending order.
+```{r}
+not_cancelled %>% 
+  group_by(dest) %>% 
+  summarise(distance_sd = sd(distance)) %>% 
+  arrange(desc(distance_sd)) %>%
+  head()
+```
+
+Here, we find the destinations with the most carriers:
+```{r}
+not_cancelled %>% 
+  group_by(dest) %>% 
+  summarise(carriers = n_distinct(carrier)) %>% 
+  arrange(desc(carriers)) %>%
+  head()
+```
+
+You can also use logical operators with `summarise()`, because TRUE returns 1 and FALSE returns 0. 
+```{r}
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(n_early = sum(dep_time < 500)) %>%
+  head()
+```
+
+###count()
+Returns a count of all unique options.
+```{r}
+not_cancelled %>% 
+  count(dest) %>%
+  head()
+```
+
+You can also use it to sum another variable by providing a 'weight' `wt=`
+```{r}
+not_cancelled %>% 
+  count(tailnum, wt = distance) %>%
+  head()
+```
+
+##ungroup()
+To undo the grouping use `ungroup()`. This is useful when you want to create a new column by calculating a group variable, then want to return to original rows for further steps.
+
+##ggplot
+You can also include ggplot in dplyr piped sequences to take a look at data. Just note that ggplot doesn't use pipes but rather + 
+```{r}
+flights %>% 
+  filter(carrier %in% c("AA", "DL", "UA", "US")) %>% 
+  ggplot(mapping = aes(x = carrier, y = dep_delay, fill = carrier)) + 
+    geom_bar(stat="identity")
+```

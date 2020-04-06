@@ -1,4 +1,6 @@
-
+<title>Home</title>
+<font size=3>
+<br>
 ## Stats Group
 
 ### For linguists and other enthusiasts
@@ -13,4 +15,6 @@ We're a group of MA students, PhDs and Postdocs who meet up regularly to read ab
 
 The group is moderated by [Kyla McConnell](https://kyla-mcconnell.github.io/website/index.html) and Julia Müller. Find us on Twitter [here](https://twitter.com/McconnellKyla) and [here](https://twitter.com/JuliaMl94290124) and Kyla on Github [here](https://github.com/kyla-mcconnell).
 
-A big shoutout to [R Ladies Freiburg](https://www.meetup.com/rladies-freiburg/)!
+This website is made entirely in R Markdown. To make your own, check out [this tutorial by Lisa DeBruine](https://debruine.github.io/tutorials/webpages.html#webpage-online).
+
+</font>

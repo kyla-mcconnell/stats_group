@@ -1,0 +1,203 @@
+---
+title: "tidying.Rmd"
+author: "Kyla McConnell"
+date: "6/13/2019"
+output:
+ html_notebook:
+    toc: true
+    theme: cosmo
+---
+
+#Data tidying
+These notes and exercises come directly from [Chapter 12 of R for Data Science](https://r4ds.had.co.nz/tidy-data.html) & Lisa DeBruine & Dale Barr's Data Skills [Part 4](https://gupsych.github.io/data_skills/04_wrangling.html). These notes are meant to accompany, not replace, these great resources!
+
+## Setup
+
+```{r setup}
+library(tidyverse)
+
+infmort <- read_csv("data/infmort.csv") #from Data Skills with Dale Barr and Lisa DeBruine P4
+matmort <- read_csv("data/matmort.csv") #from Data Skills with Dale Barr and Lisa DeBruine P4
+ccodes <- read_csv("https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv") #country codes, also used in Data Skills with Dale Barr and Lisa DeBruine P4
+```
+
+##What is tidy data?
+Tidy data has one VARIABLE per COLUMN. 
+Tidy data has one OBSERVATION per ROW.
+Tidy data has one VALUE per CELL.
+
+Commonly encountered problems are that one variable is spread over multiple columns or one observation is spread over more than one row. 
+
+`gather()` makes tables longer and narrower, `spread()` makes them wider and shorter
+
+`separate()` is used when a column contains two multiple variables and `unite()` is used when a single variable is in multiple columns
+
+##gather()
+`gather()` is used when columnn names are not variables but specific instances / values of a variable (i.e. instead of a columnn 'year', there's a column '1999' and a columnn '2000'.)
+
+Arguments: 
+1. first column to gather
+2. second column to gather
+3. `key = ""` (name of the variable whose values form the column names)
+4. `value = ""` (name of the variable whose values are spread over the cells, i.e. stats/count/cases)
+Note: if current column names start with numbers or contain whitespace, enclose them in backticks
+
+The tibble matmort has a separate column for each year:
+```{r}
+glimpse(matmort)
+```
+
+We can tidy this with `gather()`, which makes tables longer and wider. It applies here because the column names are not variables but values of a variable (i.e. values for 1999 are in one column and for 2000 are in another).
+
+
+```{r}
+matmort_long <- matmort %>%
+  gather("Year", "stats", `1990`:`2015`)
+
+glimpse(matmort_long)
+```
+See here that a span of (consecutive) columns were selected with a colon :
+
+Also note that `gather()` may convert numerical data points into character strings. This can be avoided by setting `convert = FALSE`. 
+
+##spread()
+`spread()` is used when an observation is on many rows or when a column contains variable names (i.e. columnn 'type' includes both 'population' and 'deaths')
+
+Arguments:
+1. `key = ""` (the column that contains variable names) 
+2. `values = ""` (the column that contains values from multiple variables)
+
+To show this, we first have to clean up infmort a bit. This is described in detail below, but note here, the end result is a column called 'rate' that has both the highest and lowest values from the span in it. This was transformed from a span originally inside square brackets.
+```{r}
+infmort <- infmort %>%
+  separate( #cleaning up the df -- this is described more below but was needed before we can spread()
+    3, 
+    c("rate", "ci_low", "ci_hi"), 
+    extra = "drop", 
+    sep = "(\\[|-|])", 
+    convert = TRUE
+  ) %>%
+  glimpse()
+```
+
+Now that we've taken care of that, we can use spread(), but be careful...
+```{r}
+infmort_wide <- infmort %>% 
+  spread(Year, rate) #the important part!
+
+glimpse(infmort_wide)
+```
+
+`spread()` will match on all possible combinations of columnns and values. 
+"spread matches on all the remaining columns, so Afghanistan with ci_low of 52.7 is treated as a different observation than Afghanistan with ci_low of 55.7."
+
+To fix this, we may have to merge some columns, i.e. merge ci_low, ci_hi and rate (the column we were trying to spread on) using `unite()`
+
+```{r}
+infmort_wide <- infmort %>%
+  unite(rate_ci, rate:ci_hi, sep = ", ") %>%
+  spread(Year, rate_ci)
+
+glimpse(infmort_wide)
+```
+
+##separate()
+`separate()` splits a column at the first non-alphanumeric characters or whatever you specify as the separator value (`sep=""`)
+
+Arguments:
+1. columnn name
+2. `into = c("newcol1","newcol2")` (provide both new column names)
+3. `sep = ""`, optional (either the character you want to use as a split, i.e. "/", or an integer as an index, i.e. 1, -2 (second from back), etc. without quotes)
+4. `remove =` If TRUE, remove input column from output data frame.
+5. `extra = ""`, defines what to do if there is an extra value in a column that doesn't fit ("warn" - warns then drops, "drop" - drops with no warning, "merge" - only splits at most length(into) times)
+6. `fill = ""`, defines what to do if there is a blank space ("warn" - warns thenn fills from right, "right" - fills from right, "left" - fills from left)
+
+`separte()` will leave the columns in the type that they are. We can ask it to guess a more fitting format with `convert = TRUE`.
+
+```{r}
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"), extra="drop")
+
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"), fill = "left")
+```
+
+Let's return to matmort:
+The columnn matmort$stats has several pieces of information in it: the rate, the ci_low, and the ci_hi. We want to separate this into several columns with `separate()`. We will use the default of separating at the first non-alphanumeric character.
+
+First, we have to do a couple other things: we want to remove the blank spaces from the stats column with the `mutate()` function and the `gsub()` function. 
+`mutate()` creates a new column based on the parameters you give it (and can also replace the columnn with a nenw version of itself)
+`gsub()` is like grep/grepl but the tidyverse way - used for pattern matching and replacement
+Ex: gsub(pattern, replacement, x)
+Note: there also exists `sub()` for replacing just the first instance of a pattern. Also, you can use regexs for patterns.
+
+```{r}
+matmort_split <- matmort_long %>%
+  mutate(stats = gsub(" ", "", stats)) %>%
+  separate(stats, c("rate", "ci_low", "ci_hi"), extra="drop", convert = TRUE)
+
+glimpse(matmort_split)
+```
+
+Note that we've set `extra="drop"` because splitting at every alphanumeric character would have provided four values, the fourth always empty, and we only specified three columns. The default would also have been to drop, but first to warn, so we basically just turned off the warning. 
+
+We set `convert = TRUE` becuase otherwise, all columnns were interpretted as character strings.
+
+We can also use `separate()` on infmort. Column 3 has a long name so we refer to it by number. 
+```{r}
+infmort_split <- infmort %>%
+  separate(
+    col = 3, 
+    into = c("rate", "ci_low", "ci_hi"), 
+    extra = "drop", 
+    sep = "(\\[|-|])",
+    convert = TRUE
+  )
+
+glimpse(infmort_split)
+```
+
+Note: we have to define what separators to use here. Otherwise, full stops (here, our decimal separator) would also be separated at.
+"You can use regular expressions to separate complex columns. Here, we want to separate on dashes and brackets. You can separate on a list of delimiters by putting them in parentheses, separated by “|”. It’s a little more complicated because brackets have a special meaning in regex, so you need to “escape” the left one with two backslashes “\\”."
+
+We also set `convert = TRUE` to set the column types to more sensible options (this is important to keep an eye on!)
+
+##unite()
+`unite()` joins two columns. By default, it will separate them with an underscore, but you can change this with the `sep= `argument.
+
+Arguments:
+1. name of new column
+2. columnn 1 to unite
+3. columnn 2 to unite
+4. `sep = ""` (set to nothing to have no character inserted in between the two columnn values)
+5. `remove = `If TRUE, remove input column from output data frame.
+6. `extra = ""`, defines what to do if there is an extra value in a column that doesn't fit ("warn" - warns then drops, "drop" - drops with no warning, "merge" - only splits at most length(into) times)
+7. `fill = ""`, defines what to do if there is a blank space ("warn" - warns thenn fills from right, "right" - fills from right, "left" - fills from left)
+
+```{r}
+infmort_united <- infmort %>%
+  unite(rate_ci, rate, ci_low, ci_hi, sep = ", ")
+
+glimpse(infmort_united)
+```
+
+#Missing values
+Explicitly missing values are marked with NA. Implicitly missing values are where something has been skipped (i.e. a year)
+
+##na.rm
+`na.rm = TRUE`
+Can be used in the `gather()` function, for example
+
+##complete()
+"The way that a dataset is represented can make implicit values explicit. For example, we can make the implicit missing value explicit by putting years in the columns:"
+
+Also, `complete()` makes missing values explicit. It finds all unique combinations of the two columns and tries to fill them, inserting NAs when necessary. 
+`stocks %>% 
+  complete(year, qtr)`
+
+##fill()
+If there are missing values due to data entry, where the entry in a column above  (i.e. name) is assumed to carry down for a couple rows below, use `fill()`, with the column name as the argument.
+
+`treatment %>% 
+  fill(person)
+  complete(year, qtr)`
