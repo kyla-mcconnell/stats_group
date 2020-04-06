@@ -4,7 +4,7 @@ output_dir: "docs"
 output:
   html_document:
     self_contained: no
-    theme: flatly
+    theme: lumen
 navbar:
   title: "Stats Group"
   left:
@@ -12,5 +12,5 @@ navbar:
       href: index.html
     - text: "Notes & Exercises"
       href: bytopic.html
-    - text: "Calendar"
+    - text: "Schedule"
       href: calendar.html

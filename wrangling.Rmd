@@ -4,8 +4,7 @@ author: "Kyla McConnell"
 date: "6/13/2019"
 ---
 
-# Data Wrangling with tidyverse
-These notes and excercises come directly from [Chapter 5 of R for Data Science](https://r4ds.had.co.nz/transform.html) & [12](https://r4ds.had.co.nz/tidy-data.html) & Lisa DeBruine & Dale Barr's Data Skills [Part 5](https://gupsych.github.io/data_skills/05_wrangling.html). These notes are meant to accompany, not replace, these great resources!
+These notes and excercises come directly from [Chapter 5 of R for Data Science](https://r4ds.had.co.nz/transform.html) & Lisa DeBruine & Dale Barr's Data Skills [Part 5](https://gupsych.github.io/data_skills/05_wrangling.html). These notes are meant to accompany, not replace, these great resources!
 
 ## Setup
 ```{r setup}

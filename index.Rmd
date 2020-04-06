@@ -1,7 +1,7 @@
-<title>Home</title>
-<font size=3>
-<br>
-## Stats Group
+---
+title: "Stats Group"
+---
+<font size=4>
 
 ### For linguists and other enthusiasts
 
@@ -14,7 +14,5 @@ If you've answered 'yes' to at least one of these questions, fear no more! The s
 We're a group of MA students, PhDs and Postdocs who meet up regularly to read about and practice statistics together. We're based in Freiburg, Germany, but now putting our resources online for a wider reach. 
 
 The group is moderated by [Kyla McConnell](https://kyla-mcconnell.github.io/website/index.html) and Julia Müller. Find us on Twitter [here](https://twitter.com/McconnellKyla) and [here](https://twitter.com/JuliaMl94290124) and on Github [here](https://github.com/kyla-mcconnell).
-
-This website is made entirely in R Markdown. To make your own, check out [this tutorial by Lisa DeBruine](https://debruine.github.io/tutorials/webpages.html#webpage-online).
 
 </font>

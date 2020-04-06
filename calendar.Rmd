@@ -1,6 +1,6 @@
-<title>Calendar</title><font size=3>
-<br>
-## Calendar and schedule 
+---
+title: "Schedule"
+---
 
 ![](img/calendar.jpg)
 

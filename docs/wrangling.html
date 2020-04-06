@@ -16,7 +16,7 @@
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -103,33 +103,33 @@ summary {
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
-  padding-top: 60px;
+  padding-top: 54px;
   padding-bottom: 40px;
 }
 /* offset scroll position for anchor links (for fixed navbar)  */
 .section h1 {
-  padding-top: 65px;
-  margin-top: -65px;
+  padding-top: 59px;
+  margin-top: -59px;
 }
 .section h2 {
-  padding-top: 65px;
-  margin-top: -65px;
+  padding-top: 59px;
+  margin-top: -59px;
 }
 .section h3 {
-  padding-top: 65px;
-  margin-top: -65px;
+  padding-top: 59px;
+  margin-top: -59px;
 }
 .section h4 {
-  padding-top: 65px;
-  margin-top: -65px;
+  padding-top: 59px;
+  margin-top: -59px;
 }
 .section h5 {
-  padding-top: 65px;
-  margin-top: -65px;
+  padding-top: 59px;
+  margin-top: -59px;
 }
 .section h6 {
-  padding-top: 65px;
-  margin-top: -65px;
+  padding-top: 59px;
+  margin-top: -59px;
 }
 .dropdown-submenu {
   position: relative;
@@ -279,7 +279,7 @@ $(document).ready(function () {
   <a href="bytopic.html">Notes &amp; Exercises</a>
 </li>
 <li>
-  <a href="calendar.html">Calendar</a>
+  <a href="calendar.html">Schedule</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -300,16 +300,13 @@ $(document).ready(function () {
 </div>
 
 
-<div id="data-wrangling-with-tidyverse" class="section level1">
-<h1>Data Wrangling with tidyverse</h1>
-<p>These notes and excercises come directly from <a href="https://r4ds.had.co.nz/transform.html">Chapter 5 of R for Data Science</a> &amp; <a href="https://r4ds.had.co.nz/tidy-data.html">12</a> &amp; Lisa DeBruine &amp; Dale Barr’s Data Skills <a href="https://gupsych.github.io/data_skills/05_wrangling.html">Part 5</a>. These notes are meant to accompany, not replace, these great resources!</p>
+<p>These notes and excercises come directly from <a href="https://r4ds.had.co.nz/transform.html">Chapter 5 of R for Data Science</a> &amp; Lisa DeBruine &amp; Dale Barr’s Data Skills <a href="https://gupsych.github.io/data_skills/05_wrangling.html">Part 5</a>. These notes are meant to accompany, not replace, these great resources!</p>
 <div id="setup" class="section level2">
 <h2>Setup</h2>
 <pre class="r"><code>library(tidyverse)
 library(nycflights13) #for flights data
 
 flights &lt;- flights #from the nycflights13 package</code></pre>
-</div>
 </div>
 <div id="data-transformation" class="section level1">
 <h1>Data transformation</h1>
