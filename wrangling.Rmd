@@ -1,283 +1,423 @@
 ---
 title: "Data Wrangling with tidyverse"
-author: "Kyla McConnell, 6/13/2019"
+author: "Kyla McConnell"
+date: "6/13/2019"
+output:
+ html_notebook:
+    toc: true
+    theme: cosmo
 ---
-<font size=3>
 
-```{r setup, include=FALSE} 
-knitr::opts_chunk$set(echo = TRUE)
-devtools::source_gist("c83e078bf8c81b035e32c3fc0cf04ee8", 
-                      filename = 'render_toc.R')
-```
-
-<br/>
-
-### Setup
-```{r}
+```{r setup, include=FALSE}
 library(tidyverse)
+library(readxl) #for reading excel files
 library(nycflights13) #for flights data
+library(Lahman) #for baseball data
 
-flights <- flights #from the nycflights13 package (you can call it without saving as a variable but I find it easier/quicker ot have it loaded once)
+infmort <- read_csv("data/infmort.csv") #from Data Skills with Dale Barr and Lisa DeBruine
+matmort <- read_xls("data/matmort.xls") #from Data Skills with Dale Barr and Lisa DeBruine
 ```
 
-These notes and excercises come directly from [Chapter 5 of R for Data Science](https://r4ds.had.co.nz/transform.html) & Lisa DeBruine & Dale Barr's Data Skills [Part 5](https://gupsych.github.io/data_skills/05_wrangling.html). These notes are meant to accompany, not replace, these great resources!
+#Data Wrangling with tidyverse
+From Chapters [5](https://r4ds.had.co.nz/transform.html) & [12](https://r4ds.had.co.nz/tidy-data.html) of R for Data Science
+and parts [4](https://gupsych.github.io/data_skills/04_wrangling.html) and [5](https://gupsych.github.io/data_skills/05_wrangling.html) of Data Skills with Dale Barr and Lisa DeBruine
 
-Note: Many of these changes would have to be saved back to the original dataframe to take permanent effect and are just shown here as temporary outputs. Ex to save permanently: `flights <- flights %>% filter(month == 1, day == 1)`
+#Data transformation
 
-Also note that many calls end with `head(3)` so that only the first 3 rows are printed. This would be excluded if you were saving to a variable.
-
-<br/>
-
-# Data Wrangling P1
-
-```{r toc, echo=FALSE} 
-render_toc("wrangling.Rmd")
-```
-
-<br/>
-
-## filter()
+##filter()
 `filter()`returns the values that match your criteria.
 
-You can use logical operators: `>`, `>=`, `<`, `<=`, `!=`, `==` and combine them with `&`, `|` and `!` (*and*, *or*, and *not*). Note: `!(x & y)` is the same as `!x | !y`, and `!(x | y)` is the same as `!x & !y`.
+You can use the logical operators >, >=, <, <=, !=, ==
+
+You can combine logical operators with `&`, `|` and `!` (*and*, *or*, and *not*)
+Note: !(x & y) is the same as !x | !y, and !(x | y) is the same as !x & !y
+
+If you are using a value with a lot of decimals, use `near()` to allow R to approximate the number i.e. `col1 == near(sqrt(2) ^ 2,  2))`
 
 Arguments:
-
 1. column1 (logical operator) outcome to match
 2. opt: column 2 (logical operator) outcome to match
 
 ```{r}
 flights %>%
-  filter(month == 11 | month == 12) %>% 
-  head(3) #returns all flights in November OR December
+  filter(month == 1, day == 1) #returns all flights on January 1st
+
+filter(flights, month == 11 | month == 12) #returns all flights in November or December
 
 flights %>%
-  filter(arr_delay >= 120 & dep_delay == 0) %>%
-  head(3) #returns all flights with an arival delay of greater than or equal to 120min AND departure delay of 0
+  filter(arr_delay >= 120 & dep_delay == 0) #returns all flights with an arival delay of greater than or equal to 120min and  departure delay of 0
 ```
 
-<br/>
-
-### in
-`%in%` selects every row where x is one of the values of y (easier than combining lots of statements with 'or')
+Another option is `%in%`, which selects every row where x is one of the values of y.
 ```{r}
 filter(flights, month %in% c(11, 12)) %>%
-  head(3) #returns first five lines of flights in November and December
+  head() #returns first five lines of flights in November and December
+```
+This would have the same output as above.
+
+`filter()`automatically excludes NAs. If you want to keep them, add `is.na()`
+
+```{r}
+flights %>%
+  filter(is.na(dep_time))
 ```
 
-<br/>
+###between()
+A useful filtering helper is between(). It is a shortcut for for x >= left & x <= right.
 
-### between()
-A useful filtering helper is `between()`. Syntax: between(x, left, right) 
+Syntax: between(x, left, right) 
+
 Example:
 `ukb %>%
   filter(sex == "M", name == "Courtney", between(year, 1998, 2001))`
 
-<br/>
+##arrange()
+`arrange()` orders the values of the columns. If you give more than one column, the following column will be the tiebreaker for preceding columns. 
 
-### is.na()
-`filter()` can also be used to show NAs in combination with the is.na() function.
+Use desc(COLUMNNAME) to arrange in descending order
+
 ```{r}
-flights %>%
-  filter(is.na(dep_time)) %>%
-  head(3) #restrict to first five lines
+arrange(flights, year, month, day)
 ```
 
-<br/>
-
-## arrange()
-`arrange()` orders the rows based on the value of the specified column(s). If you give more than one column, the following column will be the tiebreaker for preceding columns. Use `desc()` to arrange in descending order
-
+###desc()
+Puts the column in descending order, used together with arrange
 ```{r}
-arrange(flights, desc(dep_delay)) %>%
-  head(3) #returns the flights df sorted by dep_delay in descending order
-
-arrange(flights, year, month, day) %>%
-  head(3) #returns the flights df sorted by year, then month, then day
+arrange(flights, desc(dep_delay))
 ```
 Note: NAs go at the end by default. 
 
-<br/>
+##select()
+`select()` gives you the table with the columns you provide, in that order. This is most useful when you have a lot of variables/columns
 
-## select()
-`select()` gives you the table with the columns you provide, in that order. It will only return the selected columns and can be used to subset several columns.
-
-You can use multiple functions with `select()`, ex:
-
-- `starts_with("")`
-- `ends_with("")`
-- `contains("")`
-- `matches("")`(takes regular expressions)
+You can use multiple functions with `select()`
+`starts_with("")`
+`ends_with("")`
+`contains("")`
+`matches("")`(takes regexs)
+`num_range("x", 1:3)` (matches x1, x2, x3)
+`one_of()` "matches variable names in a character vector"
 
 ```{r}
 flights %>%
   select(year, month, day)
 ```
 
-<br/>
-
-You can also select or deselect a range of columns with a colon (:). You can also remove columns by preceding them with minus (-).
+You can also select or deselect a range of columns
 ```{r}
-select(flights, -(year:day)) %>%
-  head(3)
+select(flights, -(year:day))
 ```
-
-<br/>
 
 `select()` will only return the columns you explicitly list, unless you use `everything()`
 Using this can be useful just for reordering columns without excluding anything.
 ```{r}
-select(flights, time_hour, air_time, everything()) %>%
-  head(3)
+select(flights, time_hour, air_time, everything())
 ```
 
-<br/>
-
-## rename()
+##rename()
 Renames columns. 
-Ex: `rename(flights, tail_num = tailnum)` renames the column 'tailnum' to 'tail_num'.
+Ex: `rename(flights, tail_num = tailnum)` where tailnum is renamed to tail_num
 
-<br/>
-
-## mutate()
-`mutate()` creates a new column that can be a function of another column. The new columnns are added to the left. 
+##mutate()
+`mutate()` creates a new column that is a function of another column. The new columnns are added to the left. 
 
 You can use:
+-arithmetic operators: `+`, `-`, `*`, `x/sum(x)` (proportion), `x - mean(x)` (diff. from mean), `%/%` (integer rounding), `%%` (modulo), `log2()`, etc.
+-logical comparisons: `==`, `!=`, `<=`, etc. 
+-other: `min_rank`, `max_rank`, `cumsum`, `cummean`, `ntile`, `row_number()`
 
-- arithmetic operators: `+`, `-`, `*`, `x/sum(x)` (proportion), `x - mean(x)` (diff. from mean), `%/%` (integer rounding), `%%` (modulo), `log2()`, etc.
-- logical comparisons: `==`, `!=`, `<=`, etc. 
-- other: `min_rank`, `max_rank`, `cumsum`, `cummean`, `ntile`, `row_number()`
 
 ```{r}
 flights %>%
   mutate(
     gain = dep_delay - arr_delay,
     hours = air_time / 60,
-    gain_per_hour = gain / hours) %>%
-  head(3)
+    gain_per_hour = gain / hours)
 ```
 
-<br/>
-
-### transmute()
-`transmute()` is similiar to mutate but keeps only the new columns you create and deletes the others.
+###transmute()
+`transmute()` is similiar to mutate but keeps only the nenw columns you create.
 
 ```{r}
-flights %>%
-  transmute(
-    dep_time,
-    hour = dep_time %/% 100,
-    minute = dep_time %% 100
-    ) %>%
-  head(3)
+transmute(flights,
+  dep_time,
+  hour = dep_time %/% 100,
+  minute = dep_time %% 100
+)
 ```
 
-<br/>
-
-## summarise() and group_by()
+##summarise() and group_by()
 `summarise()` collaspes a dataframe into a single row. It is most useful when used with `group_by()`, which allows you to look at different groups. 
+
+Example (prints total amount of babies (n per name) born in each year by sex:
+`ukb %>%
+  group_by(year, sex) %>%
+  summarize(tot = sum(n))` 
 
 Some things you can summarise include:
 -`mean()`, `median()`, `sd()`
 -`min()`, `max()` 
 -`x[length(x)]` (last in the range)
 -`IQR()` interquartile range
--`quantile(x, 0.25)` will find a value of the 25th quantile
+-`quantile(x, 0.25)` will find a value of x that is greater than 25% of the values, and less than the remaining 75%
 -Measures of position: `first(x)`, `nth(x, 2)`, `last(x)`
 -Count: `n()`
 -Count NAs: `sum(!is.na(x))`
 -Count uniques: `n_distinct(x)`
 
 ```{r}
-flights %>%
+flights <- flights %>%
   group_by(year, month, day) %>%
-  summarise(delay = mean(dep_delay, na.rm = TRUE)) %>%
-  head(3)
+  summarise(delay = mean(dep_delay, na.rm = TRUE))
 ```
 Note that `na.rm = TRUE` is really important here, or else the mean for any group with any NA in the column dep_delay would be NA!
-
-<br/>
 
 When you use `groupby()`, it's helpful to include the count `n()` to get an idea for the scale that you're looking at. For example, to know if you're looking at a mean of 4 datapoints or 4000.
 
 ```{r}
 not_cancelled <- flights %>% 
-  filter(!is.na(dep_delay), !is.na(arr_delay)) #make a subset of flights that were not cancelled, save it as a new df
+  filter(!is.na(dep_delay), !is.na(arr_delay))
 
-not_cancelled %>%
+not_cancelled %>% 
   group_by(tailnum) %>% 
   summarise(
     delay = mean(arr_delay, na.rm = TRUE),
     n = n()
-  ) %>%
-  head(3)#shows the tail number, the mean delay and the number of items with that tail number for the first 3 rows
+  )
 ```
-Note that we first removed NAs systematically to better work with the data.
-
-<br/>
+Here we first removed NAs systematically to better work with the data.
 
 Another example, here we summarize the average sandard deviation by destination arranged in descending order.
 ```{r}
 not_cancelled %>% 
   group_by(dest) %>% 
   summarise(distance_sd = sd(distance)) %>% 
-  arrange(desc(distance_sd)) %>%
-  head(3)
+  arrange(desc(distance_sd))
 ```
-
-<br/>
 
 Here, we find the destinations with the most carriers:
 ```{r}
 not_cancelled %>% 
   group_by(dest) %>% 
   summarise(carriers = n_distinct(carrier)) %>% 
-  arrange(desc(carriers)) %>%
-  head(3)
+  arrange(desc(carriers))
 ```
-
-<br/>
 
 You can also use logical operators with `summarise()`, because TRUE returns 1 and FALSE returns 0. 
 ```{r}
 not_cancelled %>% 
   group_by(year, month, day) %>% 
-  summarise(n_early = sum(dep_time < 500)) %>%
-  head(3)
+  summarise(n_early = sum(dep_time < 500))
 ```
 
-<br/>
-
-### count()
+###count()
 Returns a count of all unique options.
 ```{r}
 not_cancelled %>% 
-  count(dest) %>%
-  head(3)
+  count(dest)
 ```
-
-<br/>
 
 You can also use it to sum another variable by providing a 'weight' `wt=`
 ```{r}
 not_cancelled %>% 
-  count(tailnum, wt = distance) %>%
-  head(3)
+  count(tailnum, wt = distance)
 ```
 
-<br/>
+##ungroup()
+To undo the grouping use `ungroup()`
 
-## ungroup()
-To undo the grouping use `ungroup()`. This is useful when you want to create a new column by calculating a group variable, then want to return to original rows for further steps.
-
-<br/>
-
-## ggplot
-You can also include ggplot in dplyr piped sequences to take a look at data. Just note that ggplot doesn't use pipes but rather + 
+##ggplot
+You can also included ggplot in dplyr piped sequences to take a look at data. Just note that ggplot doesn't use pipes but rather + 
 ```{r}
-flights %>% 
-  filter(carrier %in% c("AA", "DL", "UA", "US")) %>% 
-  ggplot(mapping = aes(x = carrier, y = dep_delay, fill = carrier)) + 
-    geom_bar(stat="identity")
+not_cancelled %>% 
+  filter(carrier != "UA") %>% 
+  ggplot(mapping = aes(x = n, y = delay)) + 
+    geom_point(alpha = 1/10)
 ```
-</font>
+
+#Data tidying
+
+##What is tidy data?
+Tidy data has one VARIABLE per COLUMN. 
+Tidy data has one OBSERVATION per ROW.
+Tidy data has one VALUE per CELL.
+
+Commonly encountered problems are that one variable is spread over multiple columns or one observation is spread over more than one row. 
+
+`gather()` makes tables longer and narrower, `spread()` makes them wider and shorter
+
+`separate()` is used when a column contains two multiple variables and `unite()` is used when a single variable is in multiple columns
+
+##gather()
+`gather()` is used when columnn names are not variables but specific instances / values of a variable (i.e. instead of a columnn 'year', there's a column '1999' and a columnn '2000'.)
+
+Arguments: 
+1. first column to gather
+2. second column to gather
+3. `key = ""` (name of the variable whose values form the column names)
+4. `value = ""` (name of the variable whose values are spread over the cells)
+Note: if current column names start with numbers or contain whitespace, enclose them in backticks
+
+The tibble matmort has a separate column for each year:
+```{r}
+glimpse(matmort)
+```
+
+We can tidy this with `gather()`, which makes tables longer and wider. It applies here because the column names are not variables but values of a variable (i.e. as in when values for 1999 are in one column and for 2000 are in another).
+
+Arguments:
+1. column1 to gather
+2. column2 to gather
+3. `key=""` (what you want to call the columnn)
+4. `value = ""` (what you want to call the values in the gathered column, i.e. stats/count/cases).
+
+Note: if column names start with numbers, have spaces, or have weird characters, they need to be enclosed in backticks `
+
+```{r}
+matmort_long <- matmort %>%
+  gather("Year", "stats", `1990`:`2015`)
+
+glimpse(matmort_long)
+```
+See here that multiple columns were selected with a colon :
+
+Also note that `gather()` may convert numerical data points into character strings. This can be avoided by setting `convert = TRUE`. 
+
+##spread()
+`spread()` is used when an observation is on many rows or when a column contains variable names (i.e. columnn 'type' includes both 'population' and 'deaths')
+
+Arguments:
+1. `key = ""` (the column that contains variable names) 
+2. `values = ""` (the column that contains values from multiple variables)
+
+But be careful:
+```{r}
+infmort <- read_csv("data/infmort.csv") %>%
+  separate(
+    3, 
+    c("rate", "ci_low", "ci_hi"), 
+    extra = "drop", 
+    sep = "(\\[|-|])", 
+    convert = TRUE
+  )
+
+infmort_wide <- infmort %>%
+  spread(Year, rate)
+
+glimpse(infmort_wide)
+```
+
+`spread()` will match on all possible combinations of columnns and values. 
+"spread matches on all the remaining columns, so Afghanistan with ci_low of 52.7 is treated as a different observation than Afghanistan with ci_low of 55.7."
+
+To fix this, we may have to merge some columns, i.e. merge ci_low, ci_hi and rate (the column we were trying to spread on) using `unite()`
+
+```{r}
+infmort_wide <- infmort %>%
+  unite(rate_ci, rate:ci_hi, sep = ", ") %>%
+  spread(Year, rate_ci)
+
+glimpse(infmort_wide)
+```
+
+##separate()
+`separate()` splits a column at the first non-alphanumeric characters or whatever you specify as the separator value (`sep=""`)
+
+Arguments:
+1. columnn name
+2. `into = c("newcol1","newcol2")` (provide both new column names)
+3. `sep = ""`, optional (either the character you want to use as a split, i.e. "/", or an integer as an index, i.e. 1, -2 (second from back), etc. without quotes)
+4. `remove =` If TRUE, remove input column from output data frame.
+5. `extra = ""`, defines what to do if there is an extra value in a column that doesn't fit ("warn" - warns then drops, "drop" - drops with no warning, "merge" - only splits at most length(into) times)
+6. `fill = ""`, defines what to do if there is a blank space ("warn" - warns thenn fills from right, "right" - fills from right, "left" - fills from left)
+
+`separte()` will leave the columns in the type that they are. We can ask it to guess a more fitting format with `convert = TRUE`.
+
+```{r}
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"), extra="drop")
+
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"), fill = "left")
+```
+
+Let's return to matmort:
+The columnn matmort$stats has several pieces of information in it: the rate, the ci_low, and the ci_hi. We want to separate this into several columns with `separate()`. We will use the default of separating at the first non-alphanumeric character.
+
+First, we have to do a couple other things: we want to remove the blank spaces from the stats column with the `mutate()` function and the `gsub()` function. 
+`mutate()` creates a new column based on the parameters you give it (and can also replace the columnn with a nenw version of itself)
+`gsub()` is like grep/grepl but the tidyverse way - used for pattern matching and replacement
+Ex: gsub(pattern, replacement, x)
+Note: there also exists `sub()` for replacing just the first instance of a pattern. Also, you can use regexs for patterns.
+
+```{r}
+matmort_split <- matmort_long %>%
+  mutate(stats = gsub(" ", "", stats)) %>%
+  separate(stats, c("rate", "ci_low", "ci_hi"), extra="drop", convert = TRUE)
+
+glimpse(matmort_split)
+```
+
+Note that we've set `extra="drop"` because splitting at every alphanumeric character would have provided four values, the fourth always empty, and we only specified three columns. The default would also have been to drop, but first to warn, so we basically just turned off the warning. 
+
+We set `convert = TRUE` becuase otherwise, all columnns were interpretted as character strings.
+
+We can also use `separate()` on infmort. Column 3 has a long name so we refer to it by number. 
+```{r}
+infmort_split <- infmort %>%
+  separate(
+    col = 3, 
+    into = c("rate", "ci_low", "ci_hi"), 
+    extra = "drop", 
+    sep = "(\\[|-|])",
+    convert = TRUE
+  )
+
+glimpse(infmort_split)
+```
+
+Note: we have to define what separators to use here. Otherwise, full stops (here, our decimal separator) would also be separated at.
+"You can use regular expressions to separate complex columns. Here, we want to separate on dashes and brackets. You can separate on a list of delimiters by putting them in parentheses, separated by “|”. It’s a little more complicated because brackets have a special meaning in regex, so you need to “escape” the left one with two backslashes “\\”."
+
+We also set `convert = TRUE` to set the column types to more sensible options (this is important to keep an eye on!)
+
+##unite()
+`unite()` joins two columns. By default, it will separate them with an underscore, but you can change this with the `sep= `argument.
+
+Arguments:
+1. name of new column
+2. columnn 1 to unite
+3. columnn 2 to unite
+4. `sep = ""` (set to nothing to have no character inserted in between the two columnn values)
+5. `remove = `If TRUE, remove input column from output data frame.
+6. `extra = ""`, defines what to do if there is an extra value in a column that doesn't fit ("warn" - warns then drops, "drop" - drops with no warning, "merge" - only splits at most length(into) times)
+7. `fill = ""`, defines what to do if there is a blank space ("warn" - warns thenn fills from right, "right" - fills from right, "left" - fills from left)
+
+```{r}
+infmort_united <- infmort %>%
+  unite(rate_ci, rate, ci_low, ci_hi, sep = ", ")
+
+glimpse(infmort_united)
+```
+
+#Missing values
+Explicitly missing values are marked with NA. Implicitly missing values are where something has been skipped (i.e. a year)
+
+##na.rm
+`na.rm = TRUE`
+Can be used in the `gather()` function, for example
+
+##complete()
+"The way that a dataset is represented can make implicit values explicit. For example, we can make the implicit missing value explicit by putting years in the columns:"
+
+Also, `complete()` makes missing values explicit. It finds all unique combinations of the two columns and tries to fill them, inserting NAs when necessary. 
+`stocks %>% 
+  complete(year, qtr)`
+
+##fill()
+If there are missing values due to data entry, where the entry in a column above  (i.e. name) is assumed to carry down for a couple rows below, use `fill()`, with the column name as the argument.
+
+`treatment %>% 
+  fill(person)
+  complete(year, qtr)`
+  

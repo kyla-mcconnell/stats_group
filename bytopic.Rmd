@@ -5,16 +5,19 @@ title: "Notes and resources by topic"
 
 *(in progress)*
 
+The following index of notes is meant as a helpful reference guide. Nearly all materials were taken from another resource, which is given at the top of each page. If you own these resources and don't wish for us to share the notes we've taken on them, please let us know and we will quickly remove them!
+
+
 - Principles of frequentist statistics
 - Data wrangling
     - [Notes P1: Subsets, new columns, summary variables](wrangling.html)
     - [Notes P2: Tidy data, splitting and pivoting columns](tidying.html) - Warning: See pivot_longer and pivot_wider instead of gather and spread
 - Model assumptions
 - Graphing with ggplot
-- Correlation
+- [Correlation and correlation matrices](correlation.html)
 - Comparing means: t-test
 - Comparing group means: ANOVA
-- Tests of independence:chi-square
+- Tests of independence: chi-square
 - Regression
 - Logistic Regression
 

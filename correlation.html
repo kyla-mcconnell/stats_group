@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Kyla McConnell, 10/21/2019" />
+
+
+<title>Correlation (Field Ch6)</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 54px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h2 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h3 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h4 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h5 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h6 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Stats Group</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="calendar.html">Schedule</a>
+</li>
+<li>
+  <a href="bytopic.html">Notes &amp; Exercises</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Correlation (Field Ch6)</h1>
+<h4 class="author">Kyla McConnell, 10/21/2019</h4>
+
+</div>
+
+
+<div id="correlation" class="section level1">
+<h1>Correlation</h1>
+<p>Notes based directly on <a href="https://www.amazon.com/Discovering-Statistics-Using-Andy-Field/dp/1446200469/ref=sr_1_1?dchild=1&amp;keywords=discovering+statistics+with+r&amp;qid=1598365359&amp;sr=8-1">Andy Field’s Discovering Statistics Using R</a> Chapter 6.</p>
+</div>
+<div id="correlation-1" class="section level1">
+<h1>Correlation</h1>
+<p>Correlation shows how whether and how strongly two variables are related, i.e. as one increase, does the other increase proportionally? Does it decrease? Or is there no relationship?</p>
+<div id="covariance" class="section level2">
+<h2>Covariance</h2>
+<p>The covariance between two variables looks at each point’s variation from the mean of that variable, (i.e. it checks if the value of Value X of Variable A differs from the mean of Variable A in the same or exactly the opposite way as Value X of Variable B differs from the mean of Variable B).</p>
+<p>To test if the covariance goes in the same direction (positive) or the opposite direction (negative), the two deviations are multiplied together: If the result is positive (either by multiplying two positives or two negatives), the variables covary positively. If it is negative (one is positive and the other is negative), the variables covary negatively.</p>
+<p>Problem: No standard measurement/depends on the scale of the variables. Thus, we cannot compare covariances between different datasets on different scales.</p>
+</div>
+<div id="correlation-coefficient" class="section level2">
+<h2>Correlation coefficient</h2>
+<p>Solves the problem of standardization by measuring covariance in terms of standard deviation.</p>
+<p>A correlation coefficient of 1 means that as one variable increases, the other increases by a proportionate amount. (-1 means one increases while the other decreases.) A coefficient of 0 means there is no linear relationship, as one changes the other stays the same.</p>
+<p>The significance of a correlation coefficient can be tested wth a t-statistic with N-2 degrees of freedom (or by transforming into a z-score).</p>
+</div>
+<div id="coefficient-of-determination-r-squared" class="section level2">
+<h2>Coefficient of determination (R squared)</h2>
+<p>Correlation coefficient squared: the amount of variability in one variable that is shared by the other. Describes how much of the variance is described by the variable of interest.</p>
+<p>i.e. If the correlation coefficient between Exam (score) and Anxiety is -0.441, then this squared is 0.194. Thus, Rsquared = .194, and Anxiety shares 19.4% of the variance in exam scores. This does not mean that it caused this variance.</p>
+<p>This can easily be calculated with cor(data)^2 (*100 for the percentages).</p>
+<pre class="r"><code>cor(examData2) ^2 #now the output is showing the shared variance (the coefficient of determination)</code></pre>
+<pre><code>##              Exam   Anxiety    Revise
+## Exam    1.0000000 0.1944752 0.1573873
+## Anxiety 0.1944752 1.0000000 0.5030345
+## Revise  0.1573873 0.5030345 1.0000000</code></pre>
+</div>
+<div id="correlation-does-not-imply-causation" class="section level2">
+<h2>Correlation does not imply causation!</h2>
+<p>Third-varaible problem: something else might be responsible for both changes Direction of causality: can’t say which variable is causing the other to change</p>
+</div>
+</div>
+<div id="types-of-correlation-coefficients" class="section level1">
+<h1>Types of correlation coefficients</h1>
+<div id="pearsons-r" class="section level2">
+<h2>Pearson’s r</h2>
+<p>The covariance is divided by the standard deviations (of the two variables, multiplied together), thus giving a result in standard deviation units. This always lands betwen -1 and 1.</p>
+<p>Assumptions: interval data, normal distribution (unless one of the variables is a binary categorical variable)</p>
+<p>Also commonly used for effect size (small effect = .10, describing 1% of the variance, medium effect = .30, describing 9% of the variance, large effecft = .5, describing 50% of the variance)</p>
+</div>
+<div id="spearmans-rho" class="section level2">
+<h2>Spearman’s rho</h2>
+<p>First RANKS the data, then applies Pearson’s equation to the ranks.</p>
+<p>Can be used for ordinal &amp; non-normally distributed data.</p>
+</div>
+<div id="kendalls-tau" class="section level2">
+<h2>Kendall’s tau</h2>
+<p>First RANKS the data, then applies Pearson’s equation to the ranks. Used for SMALL SAMPLE SIZES with TIED RANKS.</p>
+<p>Can be used for ordinal &amp; non-normally distributed data.</p>
+</div>
+<div id="bivariate-partial-and-part-correlation" class="section level2">
+<h2>Bivariate, partial, and part correlation</h2>
+<p>Bivariate correlation shows how two variables covary.</p>
+<p>Partial correlation controls for one or more additional varaibles. This controls for the effect of the third variable on BOTH other variables. Ex: Exam grade, Anxiety and Revision (the grade is affected by anxiety, but also by revision; likewise, anxiety is also affected by revision time)</p>
+<p>Semi-partial or part correlation controls for one or more additional variables, but only for the effect they have on ONE of the variables. This is used when explaining the variance in the outcome from a set of predictor variables.</p>
+</div>
+<div id="biserial-point-biserial-correlation" class="section level2">
+<h2>Biserial &amp; point-biserial correlation</h2>
+<p>Point biserial correlation is used for dichotomous categorical variables (i.e. you are either pregnant or not pregnant, never “a bit pregnant”). This can be done with cor.test() with the dichotomy coded as 1 and 0 (though note that the direction of the effect directly reflects which vaiable is coded as 1 and which is coded as 0, thus is not theoretically relevant)</p>
+<p>Biserial correlation is used for binary categorical variables that exist on a continuum (i.e. passing and failing an exam). This is done with polycor::polyserial() Ex: <code>polyserial(catData$time, catData$gender)</code></p>
+</div>
+<div id="comparing-correlation-coefficients" class="section level2">
+<h2>Comparing correlation coefficients</h2>
+<p>If you want to compare correlation coefficients between different groups (i.e. is the correlation significantly different in the male subset than the female), you first subset your data, then get the correlation coefficients, then follow the equation p. 239</p>
+<p>You can also use a t-statistic to compare correlation coefficients that occur within the same sample (i.e. is the relationship between anxiety and performance stronger than between revision and exam performance?). See p. 239 as well.</p>
+</div>
+<div id="calculating-effect-size" class="section level2">
+<h2>Calculating effect size</h2>
+<p>Pearson’s r squared is Rsquared, which is a measure of effect size.</p>
+<p>Spearman’s can also be squared for effect size, but must be interpretted as the proprotion of variance in ranks that the two variables share.</p>
+<p>Kendall’s tau is smaller than the other two. Thus is shouldn’t be direclty used for effect size.</p>
+<p>You should also be careful in interpretting this with part and partial correlations.</p>
+</div>
+</div>
+<div id="calculating-correlation-in-r" class="section level1">
+<h1>Calculating correlation in R</h1>
+<div id="before-you-start" class="section level2">
+<h2>Before you start</h2>
+<p>Scatterplot your data.</p>
+<pre class="r"><code>adverts &lt;- c(5,4,4,6,8)
+packets &lt;- c(8,9,10,13,15)
+advertData &lt;- data.frame(adverts, packets)
+
+ggplot(data = advertData) + 
+  geom_point(mapping = aes(x = adverts, y = packets))</code></pre>
+<p><img src="correlation_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+</div>
+<div id="cor-vs.-cor.test-vs.-rcorr" class="section level2">
+<h2>cor() vs. cor.test() vs. rcorr()</h2>
+<p>For rcorr() you have to have the package HMisc installed and loaded.</p>
+<p>All three do Pearson’s r and Spearman’s rho; cor() and cor.test() also do Kenall’s tau.</p>
+<p>cor.test() and rcorr() give p-values. Just cor.test() also gives confidence intervals.</p>
+<p>cor() and rcorr() do multiple correlations.</p>
+<div id="cor" class="section level3">
+<h3>cor()</h3>
+<p>Form: cor(x, y, use = “string”, method = “correlation type”) x: a numeric variable or dataframe y: another numeric variable (or left out if x is a dataframe with both variables included) use: “everything” will output NA for any missing values, “all.obs” will give an error message for any missing values, “complete.obs” will give correlations only from cases that are complete for all variables (excluding cases listwise*), or “pairwise.complete.obs” will give correlations only from cases that are complete for those two varaibles (excluding cases pairwise) method: “pearson”, “spearman”, “kendall”, or multiple with c(“pearson”, “spearman”, “kendall”)</p>
+<p>*Excluding cases listwise means that any participant with a missing datapoint anywhere in the frame will be totally left out. Excluding pairwise means that the participant is excluded only when the value that is missing is actively inluded in the analysis.</p>
+<pre class="r"><code>cor(examData$Exam, examData$Anxiety, use = &quot;complete.obs&quot;, method = &quot;pearson&quot;)</code></pre>
+<pre><code>## [1] -0.4409934</code></pre>
+<pre class="r"><code>cor(examData[, c(&quot;Exam&quot;, &quot;Anxiety&quot;, &quot;Revise&quot;)])</code></pre>
+<pre><code>##               Exam    Anxiety     Revise
+## Exam     1.0000000 -0.4409934  0.3967207
+## Anxiety -0.4409934  1.0000000 -0.7092493
+## Revise   0.3967207 -0.7092493  1.0000000</code></pre>
+</div>
+<div id="rcorr" class="section level3">
+<h3>rcorr()</h3>
+<p>Form: rcorr(x, y, type = “correlation type”) x: a numeric variable or dataframe y: another numeric variable (or left out if x is a dataframe with both variables included) type: “pearson”, “spearman”, or both with c(“pearson”, “spearman”)</p>
+<p>This doesn’t work on dataframes, just matrices. Exludes pairwise. Gives p-values.</p>
+<pre class="r"><code>Exam &lt;- examData$Exam
+Anxiety &lt;- examData$Anxiety
+rcorr(Exam, Anxiety, type = &quot;pearson&quot;)</code></pre>
+<pre><code>##       x     y
+## x  1.00 -0.44
+## y -0.44  1.00
+## 
+## n= 103 
+## 
+## 
+## P
+##   x  y 
+## x     0
+## y  0</code></pre>
+</div>
+<div id="cor.test" class="section level3">
+<h3>cor.test()</h3>
+<p>Form: cor.test(x, y, alternative = “string”, method = “correlation type”, conf. level = 0.95) x: a numeric variable or dataframe y: another numeric variable (or left out if x is a dataframe with both variables included) alternative: “two.sided” as the default, or “less” / “greater” if you predict and are only interested in one direction of correlation method: “pearson”, “spearman”, or both with c(“pearson”, “spearman”) conf.level: can be left blank for the default of 0.95, but can be changed</p>
+<p>This doesn’t work on dataframes, just matrices. Exludes pairwise. Gives p-values.</p>
+<pre class="r"><code>cor.test(examData$Exam, examData$Anxiety, alternative = &quot;less&quot;, method = &quot;pearson&quot;)</code></pre>
+<pre><code>## 
+##  Pearson&#39;s product-moment correlation
+## 
+## data:  examData$Exam and examData$Anxiety
+## t = -4.938, df = 101, p-value = 1.564e-06
+## alternative hypothesis: true correlation is less than 0
+## 95 percent confidence interval:
+##  -1.0000000 -0.2995071
+## sample estimates:
+##        cor 
+## -0.4409934</code></pre>
+</div>
+<div id="example-pearsons-r-with-cor-and-cor.test" class="section level3">
+<h3>Example: Pearson’s r with cor() and cor.test()</h3>
+<p>Use Pearson’s r to determine correlations in the examData dataframe.</p>
+<p>First: some variables aren’t numeric (Gender), and others not numerically meaningful (code). Remove these.</p>
+<p>Then, use cor(), where the default is Pearson.</p>
+<pre class="r"><code>examData2 &lt;- examData[, c(&quot;Exam&quot;, &quot;Anxiety&quot;, &quot;Revise&quot;)]
+
+cor(examData2)</code></pre>
+<pre><code>##               Exam    Anxiety     Revise
+## Exam     1.0000000 -0.4409934  0.3967207
+## Anxiety -0.4409934  1.0000000 -0.7092493
+## Revise   0.3967207 -0.7092493  1.0000000</code></pre>
+<p>Because Pearson’s r is also used for effect size calculations, we don’t need p-values. If we really wanted to, we could use Hmisc::rcorr, like so:</p>
+<pre class="r"><code>examMatrix &lt;- as.matrix(examData[, c(&quot;Exam&quot;, &quot;Anxiety&quot;, &quot;Revise&quot;)]) #must be a matrix
+rcorr(examMatrix)</code></pre>
+<pre><code>##          Exam Anxiety Revise
+## Exam     1.00   -0.44   0.40
+## Anxiety -0.44    1.00  -0.71
+## Revise   0.40   -0.71   1.00
+## 
+## n= 103 
+## 
+## 
+## P
+##         Exam Anxiety Revise
+## Exam          0       0    
+## Anxiety  0            0    
+## Revise   0    0</code></pre>
+<p>The output shows a lot of 0s because the pvalues are less than .001. This is showing the likelihood of getting these correlation coefficients if the null hypothesis is true (very low, in this case).</p>
+<p>We can also look at confidence intervals. This only works if you use two variables at a time (not more):</p>
+<pre class="r"><code>cor.test(examData$Anxiety, examData$Exam)</code></pre>
+<pre><code>## 
+##  Pearson&#39;s product-moment correlation
+## 
+## data:  examData$Anxiety and examData$Exam
+## t = -4.938, df = 101, p-value = 3.128e-06
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.5846244 -0.2705591
+## sample estimates:
+##        cor 
+## -0.4409934</code></pre>
+</div>
+</div>
+<div id="bootstrapping-correlations" class="section level2">
+<h2>Bootstrapping correlations</h2>
+<p>Used when the assumptions of Pearson’s cannot be met.</p>
+<p>Form: object &lt;- boot(data, function, replications) data: dataframe function: write a function to be repeated by the bootstrapping replications: number of repetitions, can use 2000 for example</p>
+<div id="writing-functions-for-use-in-bootstrapping-and-elsewhere" class="section level3">
+<h3>Writing functions for use in bootstrapping (and elsewhere)</h3>
+<p>Form: nameofFunction &lt;- function(inputObject1, inputObject2, etc..) { commands to do to the input commands for the output }</p>
+<p>The input objects can take any name but this should stay consistent through the commands.</p>
+<pre class="r"><code>meanofVariables &lt;- function(variable)
+{
+  mean &lt;- sum(variable)/length(variable)
+  cat(&quot;Mean = &quot;, mean) #cat is used to print output
+}
+
+lecturerFriends &lt;- c(1,2,3,3,4) #example dataframe
+meanofVariables(lecturerFriends) #example function output</code></pre>
+<pre><code>## Mean =  2.6</code></pre>
+<p>###Example: Bootstrapping Kendall’s tau</p>
+<pre class="r"><code>bootTau &lt;- function(liarData, i)
+{
+  cor(liarData$Position[i], liarData$Creativity[i], use = &quot;complete.obs&quot;, method=&quot;kendall&quot;)
+}
+
+boot_kendall &lt;- boot(liarData, bootTau, 2000)
+boot_kendall</code></pre>
+<pre><code>## 
+## ORDINARY NONPARAMETRIC BOOTSTRAP
+## 
+## 
+## Call:
+## boot(data = liarData, statistic = bootTau, R = 2000)
+## 
+## 
+## Bootstrap Statistics :
+##       original       bias    std. error
+## t1* -0.3002413 -0.002799446  0.09493037</code></pre>
+<pre class="r"><code>boot.ci(boot_kendall) #gives the confidence interval</code></pre>
+<pre><code>## Warning in boot.ci(boot_kendall): bootstrap variances needed for studentized intervals</code></pre>
+<pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+## Based on 2000 bootstrap replicates
+## 
+## CALL : 
+## boot.ci(boot.out = boot_kendall)
+## 
+## Intervals : 
+## Level      Normal              Basic         
+## 95%   (-0.4835, -0.1114 )   (-0.4909, -0.1147 )  
+## 
+## Level     Percentile            BCa          
+## 95%   (-0.4858, -0.1096 )   (-0.4756, -0.0934 )  
+## Calculations and Intervals on Original Scale</code></pre>
+<p>##Partial correlations Use pcor() and pcor.test()</p>
+</div>
+<div id="pcor" class="section level3">
+<h3>pcor()</h3>
+<p>Form: pcor(c(“var1”, “var2”, “control1”, “control2”), var(dataframe))</p>
+<pre class="r"><code>pc &lt;- pcor(c(&quot;Exam&quot;, &quot;Anxiety&quot;, &quot;Revise&quot;), var(examData2)) 
+pc #shows the correlation between Exam and Anxiety, controlling for Revise</code></pre>
+<pre><code>## [1] -0.2466658</code></pre>
+<pre class="r"><code>pc^2 #shows the amount of cvariance in Exam that is shared with Anxiety when Revise is controlled for</code></pre>
+<pre><code>## [1] 0.06084403</code></pre>
+</div>
+<div id="pcor.test" class="section level3">
+<h3>pcor.test()</h3>
+<p>Form: pcor.test(pcor object, number of control variables, sample size)</p>
+<p>You already have to have done the pcor and saved it as an object. Gives t-value, degrees of freedom and p-value for the correlation.</p>
+<pre class="r"><code>pcor.test(pc, 1, 103)</code></pre>
+<pre><code>## $tval
+## [1] -2.545307
+## 
+## $df
+## [1] 100
+## 
+## $pvalue
+## [1] 0.01244581</code></pre>
+<p>#Reporting correlations APA style: no zero before the decimal point in correlation coefficients, report to 2 decimal places, mention if it is a one-tailed test, use the correct coefficient (including the Greek symbols), use standard probability criteria (.05, .01, .001)</p>
+<p>Examples: “There was a significant relationship between the number of adverts waatched and the number of packets of sweets purchased, r(italics) = .87, p(italics) (one-tailed) &lt; .05.” “Exam performance was significantly correlated with exam anxiety, r = -.44, and time spent revising, r = .40; the time spent revising was also correlated with exam anxiety, r = -.71 (all ps &gt; .001).” See p.241 for other examples (pairwise correlations, Kendall’s tau symbol, etc.)</p>
+</div>
+</div>
+</div>
+<div id="correlation-matrices" class="section level1">
+<h1>Correlation matrices</h1>
+<div id="corrplot" class="section level2">
+<h2>corrplot</h2>
+<p>Package: corrplot Documentation: <a href="https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html" class="uri">https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html</a></p>
+<p>Plots the correlation between many variables at the same time in a matrix.</p>
+<p>Form: corrplot(cor output, type=“string”, method=“string”, tl.cex=0.9) cor output: first conduct cor() and save it to an item type: “full” for full matrix (where every combination appears twice), or “upper” or “lower” for one half method: “number” for (colored) correlaton coefficients, can also use “circle”, “square”, “ellipse”, “shade”, “color” or “pie” (but these are often confusing) upper: set upper=“pie/etc” to set the upper half to a certain look lower: set lower=“number/etc” to set the lower half to a certain look (so you can combine two different display modes) order: see documentation, recommendation is probably “hclust”</p>
+<p>See documentation for more, incl. coloring, labels, etc.</p>
+<pre class="r"><code>exam_cor = cor(examData2) #creates correlation item
+corrplot(exam_cor, type=&quot;upper&quot;,  method = &quot;number&quot;, tl.cex = 0.9)#order=&quot;hclust&quot;,</code></pre>
+<p><img src="correlation_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<pre class="r"><code>bigram_cor = cor(lemma_metrics_short)
+corrplot(bigram_cor, type=&quot;upper&quot;,  method = &quot;number&quot;, tl.cex = 0.9)#order=&quot;hclust&quot;,</code></pre>
+<p><img src="correlation_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
+</div>
+<div id="chart.correlation" class="section level2">
+<h2>chart.Correlation</h2>
+<p>Package: PerformanceAnalytics Documentation: <a href="https://www.rdocumentation.org/packages/PerformanceAnalytics/versions/1.5.3/topics/chart.Correlation" class="uri">https://www.rdocumentation.org/packages/PerformanceAnalytics/versions/1.5.3/topics/chart.Correlation</a></p>
+<p>Plots the correlation between many variables at the same time in a matrix, plus the result of cor.test() as stars, and an optional histogram.</p>
+<p>Form: corrplot(as.matrix(data), histogram=TRUE, method=“string”) data: must be a matrix or converted to a matrix histogram: TRUE/FALSE method: “spearman”, “pearson”, “kendall”, or multiple c(“spearman”, “pearson”)</p>
+<p>NOTE: Significance stars are for your information but should not be relied upon because the p-values should be Bonferonni-corrected first.</p>
+<pre class="r"><code>chart.Correlation(as.matrix(examData2),  method = &quot;spearman&quot;)</code></pre>
+<pre><code>## Warning in cor.test.default(as.numeric(x), as.numeric(y), method = method): Cannot compute exact p-value with ties
+
+## Warning in cor.test.default(as.numeric(x), as.numeric(y), method = method): Cannot compute exact p-value with ties
+
+## Warning in cor.test.default(as.numeric(x), as.numeric(y), method = method): Cannot compute exact p-value with ties</code></pre>
+<p><img src="correlation_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+</div>
+<div id="ggpairs" class="section level2">
+<h2>ggpairs</h2>
+<p>Package: GGally Documentation: <a href="https://www.rdocumentation.org/packages/GGally/versions/1.4.0/topics/ggpairs" class="uri">https://www.rdocumentation.org/packages/GGally/versions/1.4.0/topics/ggpairs</a></p>
+<p>Form: ggpairs(data, upper= list(continuous=wrap(‘cor’, method=“spearman”)))</p>
+<p>data: Dataset of variables upper: Plots the correlation coefficients of the given method using the cor plot, continuous meaning that the variables are continuous.</p>
+<p>See documentation for the rest of the very complicated form.</p>
+<pre class="r"><code>ggpairs(examData2, upper = list(continuous = wrap(&#39;cor&#39;, method = &quot;spearman&quot;)))</code></pre>
+<pre><code>## Warning in cor.test.default(x, y, method = method, use = use): Cannot compute exact p-value with ties
+
+## Warning in cor.test.default(x, y, method = method, use = use): Cannot compute exact p-value with ties
+
+## Warning in cor.test.default(x, y, method = method, use = use): Cannot compute exact p-value with ties</code></pre>
+<p><img src="correlation_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+<div id="pairs.panels" class="section level2">
+<h2>pairs.panels</h2>
+<p>Package: psych Documentation: <a href="https://www.rdocumentation.org/packages/psych/versions/1.8.12/topics/pairs.panels" class="uri">https://www.rdocumentation.org/packages/psych/versions/1.8.12/topics/pairs.panels</a></p>
+<p>Form: pairs.panels(data, scale=TRUE, method=“string”) data: dataset scale: TRUE or FALSE method: “spearman”, “pearson”, “kendall”</p>
+<p>See documentation for more.</p>
+<pre class="r"><code>pairs.panels(examData2, scale=TRUE, method = &quot;spearman&quot;)</code></pre>
+<p><img src="correlation_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

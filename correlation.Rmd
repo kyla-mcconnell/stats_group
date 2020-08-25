@@ -1,6 +1,9 @@
 ---
 title: "Correlation (Field Ch6)"
 author: "Kyla McConnell, 10/21/2019"
+html_notebook:
+  toc: true
+  theme: cosmo
 ---
 
 ```{r setup, include=FALSE}
@@ -17,17 +20,20 @@ library(GGally) #for correlation matrices
 library(psych) #for correlation matrices
 
 #Exam data: shows the exam scores (Exam), anxiety levels (Anxiety), and amount of time preparing (Revise)
-examData <- read.delim("~/Documents/PhD/Coding/R/Field_DiscStatswithR/Data/ExamAnxiety.txt", header=TRUE)
+examData <- read_tsv("data/Field_ExamAnxiety.txt")
 examData2 <- examData[, c("Exam", "Anxiety", "Revise")] #includes only the interval variables
 
 #Liar data: shows the position that the person got in the liar contest, where lower is better (Position), and their creativity (Creativity)
-liarData <- read.delim("~/Documents/PhD/Coding/R/Field_DiscStatswithR/Data/The Biggest Liar.dat", header=TRUE)
+liarData <- read_tsv("data/Field_Liar.dat")
 
 #My own bigram data from my current project
-bigrams = read.table("~/Dropbox/SPR Results Kyla/PhDstuff/Stimuli/Kyla_stimuli_Exp1.csv", sep=",", fill = TRUE, header = TRUE)
+bigrams = read_csv("data/McConnell_collocations.csv")
 lemma_metrics = bigrams[,c(20:34)]
 lemma_metrics_short = bigrams[,c(20:26)]
 ```
+
+# Correlation
+Notes based directly on [Andy Field's Discovering Statistics Using R](https://www.amazon.com/Discovering-Statistics-Using-Andy-Field/dp/1446200469/ref=sr_1_1?dchild=1&keywords=discovering+statistics+with+r&qid=1598365359&sr=8-1) Chapter 6.
 
 # Correlation
 Correlation shows how whether and how strongly two variables are related, i.e. as one increase, does the other increase proportionally? Does it decrease? Or is there no relationship?
@@ -35,12 +41,12 @@ Correlation shows how whether and how strongly two variables are related, i.e. a
 ## Covariance
 The covariance between two variables looks at each point's variation from the mean of that variable, (i.e. it checks if the value of Value X of Variable A differs from the mean of Variable A in the same or exactly the opposite way as Value X of Variable B differs from the mean of Variable B).
 
-To test if the covariance goes in the same direction (positive) or the opposite direction (negative), the two deviations are multiplied together: If the result is positive (either by multiplying two postitives or two negatives), the variables covary positively. If it is negative (one is positive and the other is negative), the variables covary negatively.
+To test if the covariance goes in the same direction (positive) or the opposite direction (negative), the two deviations are multiplied together: If the result is positive (either by multiplying two positives or two negatives), the variables covary positively. If it is negative (one is positive and the other is negative), the variables covary negatively.
 
 Problem: No standard measurement/depends on the scale of the variables. Thus, we cannot compare covariances between different datasets on different scales.
 
 ## Correlation coefficient
-Solves the problem of standardization by measuing covariance in terms of standard deviation.
+Solves the problem of standardization by measuring covariance in terms of standard deviation.
 
 A correlation coefficient of 1 means that as one variable increases, the other increases by a proportionate amount. (-1 means one increases while the other decreases.) A coefficient of 0 means there is no linear relationship, as one changes the other stays the same.
 
@@ -306,8 +312,6 @@ NOTE: Significance stars are for your information but should not be relied upon 
 
 ```{r}
 chart.Correlation(as.matrix(examData2),  method = "spearman")
-
-#chart.Correlation(as.matrix(lemma_metrics_short),  method = "spearman")
 ```
 
 ## ggpairs
@@ -323,8 +327,6 @@ See documentation for the rest of the very complicated form.
 
 ```{r}
 ggpairs(examData2, upper = list(continuous = wrap('cor', method = "spearman")))
-
-#ggpairs(lemma_metrics_short, upper = list(continuous = wrap('cor', method = "spearman")))
 ```
 
 ## pairs.panels
@@ -340,7 +342,6 @@ See documentation for more.
 
 ```{r}
 pairs.panels(examData2, scale=TRUE, method = "spearman")
-
-#pairs.panels(lemma_metrics_short, scale=TRUE, method = "spearman")
 ```
+
 
