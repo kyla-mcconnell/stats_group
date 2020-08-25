@@ -1,0 +1,97 @@
+---
+title: "Correlation (Field Ch6)"
+author: "Kyla McConnell"
+date: "10/21/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(corrplot) #for correlation matrices
+library(PerformanceAnalytics) #for correlation matrices
+library(GGally) #for correlation matrices
+library(psych) #for correlation matrices
+
+#Exam data: shows the exam scores (Exam), anxiety levels (Anxiety), and amount of time preparing (Revise)
+examData <- read.delim("~/Documents/PhD/Coding/R/Field_DiscStatswithR/Data/ExamAnxiety.txt", header=TRUE) 
+#update this with the file location in your directory (you can find it on CH6 of Field's website, I had trouble so had to use an absolute path)
+examData2 <- examData[, c("Exam", "Anxiety", "Revise")] #includes only the interval variables
+```
+
+
+# Correlation matrices
+
+## corrplot
+Package: corrplot
+Documentation: https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html
+
+Plots the correlation between many variables at the same time in a matrix.
+
+Form: corrplot(cor output, type="string", method="string", tl.cex=0.9)
+cor output: first conduct cor() and save it to an item
+type: "full" for full matrix (where every combination appears twice), or "upper" or "lower" for one half
+method: "number" for (colored) correlaton coefficients, can also use "circle", "square", "ellipse", "shade", "color" or "pie" (but these are often confusing)
+upper: set upper="pie/etc" to set the upper half to a certain look
+lower: set lower="number/etc" to set the lower half to a certain look (so you can combine two different display modes)
+order: see documentation, recommendation is probably "hclust"
+
+See documentation for more, incl. coloring, labels, etc.
+
+```{r}
+exam_cor = cor(examData2) #creates correlation item
+corrplot(exam_cor, type="upper",  method = "number", tl.cex = 0.9)#order="hclust",
+
+```
+
+## chart.Correlation
+Package: PerformanceAnalytics
+Documentation: https://www.rdocumentation.org/packages/PerformanceAnalytics/versions/1.5.3/topics/chart.Correlation
+
+Plots the correlation between many variables at the same time in a matrix, plus the result of cor.test() as stars, and an optional histogram.
+
+Form: corrplot(as.matrix(data), histogram=TRUE, method="string")
+data: must be a matrix or converted to a matrix
+histogram: TRUE/FALSE
+method: "spearman", "pearson", "kendall", or multiple c("spearman", "pearson")
+
+NOTE: Significance stars are for your information but should not be relied upon because the p-values should be Bonferonni-corrected first.
+
+```{r}
+chart.Correlation(as.matrix(examData2),  method = "spearman")
+
+```
+
+## ggpairs
+Package: GGally
+Documentation: https://www.rdocumentation.org/packages/GGally/versions/1.4.0/topics/ggpairs
+
+Form: ggpairs(data, upper= list(continuous=wrap('cor', method="spearman")))
+
+data: Dataset of variables
+upper: Plots the correlation coefficients of the given method using the cor plot, continuous meaning that the variables are continuous.
+
+See documentation for the rest of the very complicated form.
+
+```{r}
+ggpairs(examData2, upper = list(continuous = wrap('cor', method = "spearman")))
+
+```
+
+## pairs.panels
+Package: psych
+Documentation: https://www.rdocumentation.org/packages/psych/versions/1.8.12/topics/pairs.panels
+
+Form: pairs.panels(data, scale=TRUE, method="string")
+data: dataset
+scale: TRUE or FALSE
+method: "spearman", "pearson", "kendall"
+
+See documentation for more.
+
+```{r}
+pairs.panels(examData2, scale=TRUE, method = "spearman")
+
+```
+

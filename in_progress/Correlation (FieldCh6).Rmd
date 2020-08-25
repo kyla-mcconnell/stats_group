@@ -1,0 +1,346 @@
+---
+title: "Correlation (Field Ch6)"
+author: "Kyla McConnell, 10/21/2019"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(boot) #for bootstrapping
+library(ggm)
+library(Hmisc)
+library(polycor)
+library(corrplot) #for correlation matrices
+library(PerformanceAnalytics) #for correlation matrices
+library(GGally) #for correlation matrices
+library(psych) #for correlation matrices
+
+#Exam data: shows the exam scores (Exam), anxiety levels (Anxiety), and amount of time preparing (Revise)
+examData <- read.delim("~/Documents/PhD/Coding/R/Field_DiscStatswithR/Data/ExamAnxiety.txt", header=TRUE)
+examData2 <- examData[, c("Exam", "Anxiety", "Revise")] #includes only the interval variables
+
+#Liar data: shows the position that the person got in the liar contest, where lower is better (Position), and their creativity (Creativity)
+liarData <- read.delim("~/Documents/PhD/Coding/R/Field_DiscStatswithR/Data/The Biggest Liar.dat", header=TRUE)
+
+#My own bigram data from my current project
+bigrams = read.table("~/Dropbox/SPR Results Kyla/PhDstuff/Stimuli/Kyla_stimuli_Exp1.csv", sep=",", fill = TRUE, header = TRUE)
+lemma_metrics = bigrams[,c(20:34)]
+lemma_metrics_short = bigrams[,c(20:26)]
+```
+
+# Correlation
+Correlation shows how whether and how strongly two variables are related, i.e. as one increase, does the other increase proportionally? Does it decrease? Or is there no relationship?
+
+## Covariance
+The covariance between two variables looks at each point's variation from the mean of that variable, (i.e. it checks if the value of Value X of Variable A differs from the mean of Variable A in the same or exactly the opposite way as Value X of Variable B differs from the mean of Variable B).
+
+To test if the covaranice goes in the same direction (positive) or the opposite direction (negative), the two deviations are multiplied together: If the result is positive (either by multiplying two postitives or two negatives), the variables covary positively. If it is negative (one is positive and the other is negative), the variables covary negatively.
+
+Problem: No standard measurement/depends on the scale of the variables. Thus, we cannot compare covariances between different datasets on different scales.
+
+## Correlation coefficient
+Solves the problem of standardization by measuing covariance in terms of standard deviation.
+
+A correlation coefficient of 1 means that as one variable increases, the other increases by a proportionate amount. (-1 means one increases while the other decreases.) A coefficient of 0 means there is no linear relationship, as one changes the other stays the same.
+
+The significance of a correlation coefficient can be tested wth a t-statistic with N-2 degrees of freedom (or by transforming into a z-score).
+
+## Coefficient of determination (R squared)
+Correlation coefficient squared: the amount of variability in one variable that is shared by the other. Describes how much of the variance is described by the variable of interest. 
+
+i.e. If the correlation coefficient between Exam (score) and Anxiety is -0.441, then this squared is 0.194. Thus, Rsquared = .194, and Anxiety shares 19.4% of the variance in exam scores. This does not mean that it caused this variance. 
+
+This can easily be calculated with cor(data)^2 (*100 for the percentages).
+
+```{r}
+cor(examData2) ^2 #now the output is showing the shared variance (the coefficient of determination)
+```
+
+## Correlation does not imply causation!
+Third-varaible problem: something else might be responsible for both changes
+Direction of causality: can't say which variable is causing the other to change
+
+# Types of correlation coefficients
+## Pearson's r 
+The covariance is divided by the standard deviations (of the two variables, multiplied together), thus giving a result in standard deviation units. This always lands betwen -1 and 1.
+
+Assumptions: interval data, normal distribution (unless one of the variables is a binary categorical variable)
+
+Also commonly used for effect size (small effect = .10, describing 1% of the variance, medium effect = .30, describing 9% of the variance, large effecft = .5, describing 50% of the variance)
+
+## Spearman's rho
+First RANKS the data, then applies Pearson's equation to the ranks. 
+
+Can be used for ordinal & non-normally distributed data. 
+
+## Kendall's tau
+First RANKS the data, then applies Pearson's equation to the ranks. Used for SMALL SAMPLE SIZES with TIED RANKS.
+
+Can be used for ordinal & non-normally distributed data. 
+
+## Bivariate, partial, and part correlation
+Bivariate correlation shows how two variables covary. 
+
+Partial correlation controls for one or more additional varaibles. This controls for the effect of the third variable on BOTH other variables. Ex: Exam grade, Anxiety and Revision (the grade is affected by anxiety, but also by revision; likewise, anxiety is also affected by revision time)
+
+Semi-partial or part correlation controls for one or more additional variables, but only for the effect they have on ONE of the variables. This is used when explaining the variance in the outcome from a set of predictor variables. 
+
+## Biserial & point-biserial correlation
+Point biserial correlation is used for dichotomous categorical variables (i.e. you are either pregnant or not pregnant, never "a bit pregnant"). This can be done with cor.test() with the dichotomy coded as 1 and 0 (though note that the direction of the effect directly reflects which vaiable is coded as 1 and which is coded as 0, thus is not theoretically relevant)
+
+Biserial correlation is used for binary categorical variables that exist on a continuum (i.e. passing and failing an exam). This is done with polycor::polyserial()
+Ex: `polyserial(catData$time, catData$gender)`
+
+## Comparing correlation coefficients
+If you want to compare correlation coefficients between different groups (i.e. is the correlation significantly different in the male subset than the female), you first subset your data, then get the correlation coefficients, then follow the equation p. 239 
+
+You can also use a t-statistic to compare correlation coefficients that occur within the same sample (i.e. is the relationship between anxiety and performance stronger than between revision and exam performance?). See p. 239 as well. 
+
+## Calculating effect size
+Pearson's r squared is Rsquared, which is a measure of effect size. 
+
+Spearman's can also be squared for effect size, but must be interpretted as the proprotion of variance in ranks that the two variables share. 
+
+Kendall's tau is smaller than the other two. Thus is shouldn't be direclty used for effect size. 
+
+You should also be careful in interpretting this with part and partial correlations. 
+
+# Calculating correlation in R
+## Before you start
+Scatterplot your data. 
+
+```{r}
+adverts <- c(5,4,4,6,8)
+packets <- c(8,9,10,13,15)
+advertData <- data.frame(adverts, packets)
+
+ggplot(data = advertData) + 
+  geom_point(mapping = aes(x = adverts, y = packets))
+```
+
+## cor() vs. cor.test() vs. rcorr()
+For rcorr() you have to have the package HMisc installed and loaded.
+
+All three do Pearson's r and Spearman's rho; cor() and cor.test() also do Kenall's tau.
+
+cor.test() and rcorr() give p-values. Just cor.test() also gives confidence intervals. 
+
+cor() and rcorr() do multiple correlations.
+
+### cor()
+Form: cor(x, y, use = "string", method = "correlation type")
+x: a numeric variable or dataframe
+y: another numeric variable (or left out if x is a dataframe with both variables included)
+use: "everything" will output NA for any missing values, "all.obs" will give an error message for any missing values, "complete.obs" will give correlations only from cases that are complete for all variables (excluding cases listwise*), or "pairwise.complete.obs" will give correlations only from cases that are complete for those two varaibles (excluding cases pairwise)
+method: "pearson", "spearman", "kendall", or multiple with c("pearson", "spearman", "kendall")
+
+*Excluding cases listwise means that any participant with a missing datapoint anywhere in the frame will be totally left out. Excluding pairwise means that the participant is excluded only when the value that is missing is actively inluded in the analysis.
+
+```{r}
+cor(examData$Exam, examData$Anxiety, use = "complete.obs", method = "pearson")
+
+cor(examData[, c("Exam", "Anxiety", "Revise")])
+```
+
+### rcorr()
+Form: rcorr(x, y, type = "correlation type")
+x: a numeric variable or dataframe
+y: another numeric variable (or left out if x is a dataframe with both variables included)
+type: "pearson", "spearman", or both with c("pearson", "spearman")
+
+This doesn't work on dataframes, just matrices. Exludes pairwise. Gives p-values.
+
+```{r}
+Exam <- examData$Exam
+Anxiety <- examData$Anxiety
+rcorr(Exam, Anxiety, type = "pearson")
+```
+
+### cor.test()
+Form: cor.test(x, y, alternative = "string", method = "correlation type", conf. level = 0.95)
+x: a numeric variable or dataframe
+y: another numeric variable (or left out if x is a dataframe with both variables included)
+alternative: "two.sided" as the default, or "less" / "greater" if you predict and are only interested in one direction of correlation
+method: "pearson", "spearman", or both with c("pearson", "spearman")
+conf.level: can be left blank for the default of 0.95, but can be changed
+
+This doesn't work on dataframes, just matrices. Exludes pairwise. Gives p-values.
+
+```{r}
+cor.test(examData$Exam, examData$Anxiety, alternative = "less", method = "pearson")
+```
+### Example: Pearson's r with cor() and cor.test()
+Use Pearson's r to determine correlations in the examData dataframe. 
+
+First: some variables aren't numeric (Gender), and others not numerically meaningful (code). Remove these.
+
+Then, use cor(), where the default is Pearson.
+```{r}
+examData2 <- examData[, c("Exam", "Anxiety", "Revise")]
+
+cor(examData2)
+```
+
+Because Pearson's r is also used for effect size calculations, we don't need p-values. If we really wanted to, we could use Hmisc::rcorr, like so:
+
+```{r}
+examMatrix <- as.matrix(examData[, c("Exam", "Anxiety", "Revise")]) #must be a matrix
+rcorr(examMatrix)
+```
+
+The output shows a lot of 0s because the pvalues are less than .001. This is showing the likelihood of getting these correlation coefficients if the null hypothesis is true (very low, in this case).
+
+We can also look at confidence intervals. This only works if you use two variables at a time (not more):
+```{r}
+cor.test(examData$Anxiety, examData$Exam)
+```
+
+## Bootstrapping correlations
+Used when the assumptions of Pearson's cannot be met. 
+
+Form: object <- boot(data, function, replications)
+data: dataframe
+function: write a function to be repeated by the bootstrapping
+replications: number of repetitions, can use 2000 for example
+
+### Writing functions for use in bootstrapping (and elsewhere)
+Form: nameofFunction <- function(inputObject1, inputObject2, etc..)
+{
+  commands to do to the input
+  commands for the output
+}
+
+The input objects can take any name but this should stay consistent through the commands.
+
+```{r}
+meanofVariables <- function(variable)
+{
+  mean <- sum(variable)/length(variable)
+  cat("Mean = ", mean) #cat is used to print output
+}
+
+lecturerFriends <- c(1,2,3,3,4) #example dataframe
+meanofVariables(lecturerFriends) #example function output
+```
+
+###Example: Bootstrapping Kendall's tau
+```{r}
+bootTau <- function(liarData, i)
+{
+  cor(liarData$Position[i], liarData$Creativity[i], use = "complete.obs", method="kendall")
+}
+
+boot_kendall <- boot(liarData, bootTau, 2000)
+boot_kendall
+boot.ci(boot_kendall) #gives the confidence interval
+```
+
+##Partial correlations
+Use pcor() and pcor.test()
+
+### pcor()
+Form: pcor(c("var1", "var2", "control1", "control2"), var(dataframe))
+
+```{r}
+pc <- pcor(c("Exam", "Anxiety", "Revise"), var(examData2)) 
+pc #shows the correlation between Exam and Anxiety, controlling for Revise
+pc^2 #shows the amount of cvariance in Exam that is shared with Anxiety when Revise is controlled for
+```
+
+### pcor.test()
+Form: pcor.test(pcor object, number of control variables, sample size)
+
+You already have to have done the pcor and saved it as an object. Gives t-value, degrees of freedom and p-value for the correlation. 
+
+```{r}
+pcor.test(pc, 1, 103)
+```
+
+#Reporting correlations
+APA style: no zero before the decimal point in correlation coefficients, report to 2 decimal places, mention if it is a one-tailed test, use the correct coefficient (including the Greek symbols), use standard probability criteria (.05, .01, .001)
+
+Examples:
+"There was a significant relationship between the number of adverts waatched and the number of packets of sweets purchased, r(italics) = .87, p(italics) (one-tailed) < .05."
+"Exam performance was significantly correlated with exam anxiety, r = -.44, and time spent revising, r = .40; the time spent revising was also correlated with exam anxiety, r = -.71 (all ps > .001)."
+See p.241 for other examples (pairwise correlations, Kendall's tau symbol, etc.)
+
+# Correlation matrices
+
+## corrplot
+Package: corrplot
+Documentation: https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html
+
+Plots the correlation between many variables at the same time in a matrix.
+
+Form: corrplot(cor output, type="string", method="string", tl.cex=0.9)
+cor output: first conduct cor() and save it to an item
+type: "full" for full matrix (where every combination appears twice), or "upper" or "lower" for one half
+method: "number" for (colored) correlaton coefficients, can also use "circle", "square", "ellipse", "shade", "color" or "pie" (but these are often confusing)
+upper: set upper="pie/etc" to set the upper half to a certain look
+lower: set lower="number/etc" to set the lower half to a certain look (so you can combine two different display modes)
+order: see documentation, recommendation is probably "hclust"
+
+See documentation for more, incl. coloring, labels, etc.
+
+```{r}
+exam_cor = cor(examData2) #creates correlation item
+corrplot(exam_cor, type="upper",  method = "number", tl.cex = 0.9)#order="hclust",
+
+bigram_cor = cor(lemma_metrics_short)
+corrplot(bigram_cor, type="upper",  method = "number", tl.cex = 0.9)#order="hclust",
+```
+
+## chart.Correlation
+Package: PerformanceAnalytics
+Documentation: https://www.rdocumentation.org/packages/PerformanceAnalytics/versions/1.5.3/topics/chart.Correlation
+
+Plots the correlation between many variables at the same time in a matrix, plus the result of cor.test() as stars, and an optional histogram.
+
+Form: corrplot(as.matrix(data), histogram=TRUE, method="string")
+data: must be a matrix or converted to a matrix
+histogram: TRUE/FALSE
+method: "spearman", "pearson", "kendall", or multiple c("spearman", "pearson")
+
+NOTE: Significance stars are for your information but should not be relied upon because the p-values should be Bonferonni-corrected first.
+
+```{r}
+chart.Correlation(as.matrix(examData2),  method = "spearman")
+
+#chart.Correlation(as.matrix(lemma_metrics_short),  method = "spearman")
+```
+
+## ggpairs
+Package: GGally
+Documentation: https://www.rdocumentation.org/packages/GGally/versions/1.4.0/topics/ggpairs
+
+Form: ggpairs(data, upper= list(continuous=wrap('cor', method="spearman")))
+
+data: Dataset of variables
+upper: Plots the correlation coefficients of the given method using the cor plot, continuous meaning that the variables are continuous.
+
+See documentation for the rest of the very complicated form.
+
+```{r}
+ggpairs(examData2, upper = list(continuous = wrap('cor', method = "spearman")))
+
+#ggpairs(lemma_metrics_short, upper = list(continuous = wrap('cor', method = "spearman")))
+```
+
+## pairs.panels
+Package: psych
+Documentation: https://www.rdocumentation.org/packages/psych/versions/1.8.12/topics/pairs.panels
+
+Form: pairs.panels(data, scale=TRUE, method="string")
+data: dataset
+scale: TRUE or FALSE
+method: "spearman", "pearson", "kendall"
+
+See documentation for more.
+
+```{r}
+pairs.panels(examData2, scale=TRUE, method = "spearman")
+
+#pairs.panels(lemma_metrics_short, scale=TRUE, method = "spearman")
+```
+

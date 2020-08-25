@@ -1,31 +1,46 @@
 ---
 title: "Schedule"
 ---
+<font size=4>
 
 ![](img/calendar.jpg)
 
-### Upcoming topics 
-- 08.04.20: Review, the linear model framework
-
-### Past topics
-- 15.5.19: Principles of frequentist statistics (Field ch. 1)
-- 12.6.19: Principles of frequentist statistics, cont. (Field ch. 2 & Data skills parts 1-2)
-- 26.6.19: Tidy data, Data types and preprocessing (Ch. 5 & 12 in R for Data Science, Data skills parts 4-6)
-- 10.7.19: Exploring assumptions (Field ch. 5)
-- 24.7.19: Graphing with ggplot (Ch. 3 & 7 R for Data Science, Data skills part 3)
+### Past and upcoming topics
+- 15.05.19: Principles of frequentist statistics (Field ch. 1)
+- 12.06.19: Principles of frequentist statistics, cont. (Field ch. 2 & Data skills parts 1-2)
+- 26.06.19: Tidy data, Data types and preprocessing (Ch. 5 & 12 in R for Data Science, Data skills parts 4-6)
+- 10.07.19: Exploring assumptions (Field ch. 5)
+- 24.07.19: Graphing with ggplot (Ch. 3 & 7 R for Data Science, Data skills part 3)
 - 24.10.19: Correlation (Field ch. 6)
 - 7.11.19: Regression (Field ch. 7)
 - 21.11.19: Correlation and regression recap (Simmons et al 2011, Leek et al 2015)
 - 5.12.19: Logistic regression (Field ch. 8)
 - 19.12.19: Catch-up session
-- 9.1.20: Comparing means: t-test (Field ch. 9)
-- 23.1.20: ANOVA (Levshina Sections 8.1-8.3.3 and Sections 7.1-7.2.4)
-- 12.2.20: Tests of independence: Chi-square & co.
-- 26.2.20: TidyTuesday ggplot practice
-- March 2020 interrupted due to COVID-19
+- 9.01.20: Comparing means: t-test (Field ch. 9)
+- 23.01.20: ANOVA (Levshina Sections 8.1-8.3.3 and Sections 7.1-7.2.4)
+- 12.02.20: Tests of independence: Chi-square & co.
+- 26.02.20: TidyTuesday ggplot practice
+- 28.04.20: Review - correlation, regression & logistic regression - ONLINE
+- 05.05.20: Review - ggplot, t-test, ANOVA - ONLINE
+- 28.05.20: Linear model framework (Winter Ch 4 & 5) - ONLINE
+- 18.06.20: Multiple regression & factor coding (Winter Ch 6 & 7) - ONLINE
+- 01.07.20: Join us with R-Ladies Freiburg: Text Analysis - ONLINE
+- 16.07.20: Clustering 1: K-means by Axel Bohmann - ONLINE
+- 30.07.20: Clustering 2: Hierarchical Clustering by Axel Bohmann - ONLINE
+- 17.08.20: Clustering 3: Model-based Clustering by Axel Bohmann - ONLINE
+- 01.09.20: Linear models & inferential statistics (Winter Ch 10 & 11) - ONLINE
+- 17.09.20: Interactions & plotting model output with the effects package (Winter Ch 7) - ONLINE
+- 01.10.20: Introduction to mixed effects models (TBD) - ONLINE
+- 15.10.20: Mixed effects models, continued (TBD) - ONLINE
+- 29.10.20: Mixed effects models, continued (TBD) - ONLINE
 
+</font>
+<font size=2>
 
 ### Sources
+
+Boehmke, B., & Greenwell, B. M. (2019). Hands-on machine learning with R. CRC Press.
+
 Field, A., Miles, J., & Field, Z. (2012). Discovering statistics using R. Los Angeles, London, New Delhi, Singapore, Washington, DC: Sage.
 
 Simmons, J. P., Nelson, L. D., & Simonsohn, U. (2011). False-positive psychology: Undisclosed flexibility in data collection and analysis allows presenting anything as significant. Psychological Science, 22(11), 1359–1366.
@@ -37,4 +52,4 @@ Levshina, N. (2015). How to do linguistics with R: Data exploration and statisti
 
 Winter, B. (2013). Linear models and linear mixed effects models in R with linguistic applications. Retrieved from http://arxiv.org/pdf/1308.5499 
 
-</fomt>
+</font>
