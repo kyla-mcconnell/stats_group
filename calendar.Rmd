@@ -37,7 +37,10 @@ title: "Schedule"
 </font>
 <font size=2>
 
-### Sources
+
+
+
+*Sources*
 
 Boehmke, B., & Greenwell, B. M. (2019). Hands-on machine learning with R. CRC Press.
 

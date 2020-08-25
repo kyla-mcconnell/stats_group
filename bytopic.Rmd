@@ -3,10 +3,12 @@ title: "Notes and resources by topic"
 ---
 <font size = 4>
 
+*(in progress)*
+
 - Principles of frequentist statistics
 - Data wrangling
     - [Notes P1: Subsets, new columns, summary variables](wrangling.html)
-    - Notes P2: Tidy data, splitting and pivoting columns - Coming soon.
+    - [Notes P2: Tidy data, splitting and pivoting columns](tidying.html) - Warning: See pivot_longer and pivot_wider instead of gather and spread
 - Model assumptions
 - Graphing with ggplot
 - Correlation

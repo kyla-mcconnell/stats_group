@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Kyla McConnell" />
+
+
+<title>tidying.Rmd</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 54px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h2 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h3 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h4 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h5 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h6 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Stats Group</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="bytopic.html">Notes &amp; Exercises</a>
+</li>
+<li>
+  <a href="calendar.html">Schedule</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">tidying.Rmd</h1>
+<h4 class="author">Kyla McConnell</h4>
+<h4 class="date">6/13/2019</h4>
+
+</div>
+
+
+<p>#Data tidying These notes and exercises come directly from <a href="https://r4ds.had.co.nz/tidy-data.html">Chapter 12 of R for Data Science</a> &amp; Lisa DeBruine &amp; Dale Barr’s Data Skills <a href="https://gupsych.github.io/data_skills/04_wrangling.html">Part 4</a>. These notes are meant to accompany, not replace, these great resources!</p>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<pre class="r"><code>library(tidyverse)
+
+infmort &lt;- read_csv(&quot;data/infmort.csv&quot;) #from Data Skills with Dale Barr and Lisa DeBruine P4</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Country = col_character(),
+##   Year = col_double(),
+##   `Infant mortality rate (probability of dying between birth and age 1 per 1000 live births)` = col_character()
+## )</code></pre>
+<pre class="r"><code>matmort &lt;- read_csv(&quot;data/matmort.csv&quot;) #from Data Skills with Dale Barr and Lisa DeBruine P4</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Country = col_character(),
+##   `1990` = col_character(),
+##   `2000` = col_character(),
+##   `2015` = col_character()
+## )</code></pre>
+<pre class="r"><code>ccodes &lt;- read_csv(&quot;https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/master/all/all.csv&quot;) #country codes, also used in Data Skills with Dale Barr and Lisa DeBruine P4</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   name = col_character(),
+##   `alpha-2` = col_character(),
+##   `alpha-3` = col_character(),
+##   `country-code` = col_character(),
+##   `iso_3166-2` = col_character(),
+##   region = col_character(),
+##   `sub-region` = col_character(),
+##   `intermediate-region` = col_character(),
+##   `region-code` = col_character(),
+##   `sub-region-code` = col_character(),
+##   `intermediate-region-code` = col_character()
+## )</code></pre>
+<p>##What is tidy data? Tidy data has one VARIABLE per COLUMN. Tidy data has one OBSERVATION per ROW. Tidy data has one VALUE per CELL.</p>
+<p>Commonly encountered problems are that one variable is spread over multiple columns or one observation is spread over more than one row.</p>
+<p><code>gather()</code> makes tables longer and narrower, <code>spread()</code> makes them wider and shorter</p>
+<p><code>separate()</code> is used when a column contains two multiple variables and <code>unite()</code> is used when a single variable is in multiple columns</p>
+<p>##gather() <code>gather()</code> is used when columnn names are not variables but specific instances / values of a variable (i.e. instead of a columnn ‘year’, there’s a column ‘1999’ and a columnn ‘2000’.)</p>
+<p>Arguments: 1. first column to gather 2. second column to gather 3. <code>key = ""</code> (name of the variable whose values form the column names) 4. <code>value = ""</code> (name of the variable whose values are spread over the cells, i.e. stats/count/cases) Note: if current column names start with numbers or contain whitespace, enclose them in backticks</p>
+<p>The tibble matmort has a separate column for each year:</p>
+<pre class="r"><code>glimpse(matmort)</code></pre>
+<pre><code>## Rows: 181
+## Columns: 4
+## $ Country &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, &quot;Angola&quot;, &quot;Argentina&quot;, &quot;Armenia&quot;, &quot;Australia&quot;, &quot;Austria&quot;, &quot;Azerbaijan&quot;, &quot;Baha…
+## $ `1990`  &lt;chr&gt; &quot;1 340 [ 878 - 1 950]&quot;, &quot;71 [ 58 -  88]&quot;, &quot;216 [ 141 -  327]&quot;, &quot;1 160 [ 627 - 2 020]&quot;, &quot;72 [ 64 -  80]&quot;, &quot;58 [ 51 …
+## $ `2000`  &lt;chr&gt; &quot;1 100 [ 745 - 1 570]&quot;, &quot;43 [ 33 -  56]&quot;, &quot;170 [ 118 -  241]&quot;, &quot;924 [ 472 - 1 730]&quot;, &quot;60 [ 54 -  65]&quot;, &quot;40 [ 35 - …
+## $ `2015`  &lt;chr&gt; &quot;396 [ 253 -  620]&quot;, &quot;29 [ 16 -  46]&quot;, &quot;140 [ 82 -  244]&quot;, &quot;477 [ 221 -  988]&quot;, &quot;52 [ 44 -  63]&quot;, &quot;25 [ 21 -  31]&quot;…</code></pre>
+<p>We can tidy this with <code>gather()</code>, which makes tables longer and wider. It applies here because the column names are not variables but values of a variable (i.e. values for 1999 are in one column and for 2000 are in another).</p>
+<pre class="r"><code>matmort_long &lt;- matmort %&gt;%
+  gather(&quot;Year&quot;, &quot;stats&quot;, `1990`:`2015`)
+
+glimpse(matmort_long)</code></pre>
+<pre><code>## Rows: 543
+## Columns: 3
+## $ Country &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, &quot;Angola&quot;, &quot;Argentina&quot;, &quot;Armenia&quot;, &quot;Australia&quot;, &quot;Austria&quot;, &quot;Azerbaijan&quot;, &quot;Baha…
+## $ Year    &lt;chr&gt; &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1…
+## $ stats   &lt;chr&gt; &quot;1 340 [ 878 - 1 950]&quot;, &quot;71 [ 58 -  88]&quot;, &quot;216 [ 141 -  327]&quot;, &quot;1 160 [ 627 - 2 020]&quot;, &quot;72 [ 64 -  80]&quot;, &quot;58 [ 51 …</code></pre>
+<p>See here that a span of (consecutive) columns were selected with a colon :</p>
+<p>Also note that <code>gather()</code> may convert numerical data points into character strings. This can be avoided by setting <code>convert = FALSE</code>.</p>
+<p>##spread() <code>spread()</code> is used when an observation is on many rows or when a column contains variable names (i.e. columnn ‘type’ includes both ‘population’ and ‘deaths’)</p>
+<p>Arguments: 1. <code>key = ""</code> (the column that contains variable names) 2. <code>values = ""</code> (the column that contains values from multiple variables)</p>
+<p>To show this, we first have to clean up infmort a bit. This is described in detail below, but note here, the end result is a column called ‘rate’ that has both the highest and lowest values from the span in it. This was transformed from a span originally inside square brackets.</p>
+<pre class="r"><code>infmort &lt;- infmort %&gt;%
+  separate( #cleaning up the df -- this is described more below but was needed before we can spread()
+    3, 
+    c(&quot;rate&quot;, &quot;ci_low&quot;, &quot;ci_hi&quot;), 
+    extra = &quot;drop&quot;, 
+    sep = &quot;(\\[|-|])&quot;, 
+    convert = TRUE
+  ) %&gt;%
+  glimpse()</code></pre>
+<pre><code>## Rows: 5,044
+## Columns: 5
+## $ Country &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanis…
+## $ Year    &lt;dbl&gt; 2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997, …
+## $ rate    &lt;dbl&gt; 66.3, 68.1, 69.9, 71.7, 73.4, 75.1, 76.8, 78.6, 80.4, 82.3, 84.4, 86.7, 89.0, 91.2, 93.4, 95.4, 97.2, 98.9, 100.7,…
+## $ ci_low  &lt;dbl&gt; 52.7, 55.7, 58.7, 61.6, 64.4, 66.9, 69.0, 71.2, 73.4, 75.5, 77.7, 79.9, 82.1, 84.3, 86.3, 88.2, 89.9, 91.4, 92.9, …
+## $ ci_hi   &lt;dbl&gt; 83.9, 83.6, 83.5, 83.7, 84.2, 85.1, 86.1, 87.3, 88.9, 90.7, 92.6, 94.8, 97.0, 99.3, 101.6, 103.6, 105.4, 107.2, 10…</code></pre>
+<p>Now that we’ve taken care of that, we can use spread(), but be careful…</p>
+<pre class="r"><code>infmort_wide &lt;- infmort %&gt;% 
+  spread(Year, rate) #the important part!
+
+glimpse(infmort_wide)</code></pre>
+<pre><code>## Rows: 4,934
+## Columns: 29
+## $ Country &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanis…
+## $ ci_low  &lt;dbl&gt; 52.7, 55.7, 58.7, 61.6, 64.4, 66.9, 69.0, 71.2, 73.4, 75.5, 77.7, 79.9, 82.1, 84.3, 86.3, 88.2, 89.9, 91.4, 92.9, …
+## $ ci_hi   &lt;dbl&gt; 83.9, 83.6, 83.5, 83.7, 84.2, 85.1, 86.1, 87.3, 88.9, 90.7, 92.6, 94.8, 97.0, 99.3, 101.6, 103.6, 105.4, 107.2, 10…
+## $ `1990`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 122.5, NA, NA,…
+## $ `1991`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 118.3, NA, NA, NA,…
+## $ `1992`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 114.4, NA, NA, NA, NA,…
+## $ `1993`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 110.9, NA, NA, NA, NA, NA,…
+## $ `1994`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 107.7, NA, NA, NA, NA, NA, NA,…
+## $ `1995`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 105, NA, NA, NA, NA, NA, NA, NA, N…
+## $ `1996`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 102.7, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ `1997`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 100.7, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ `1998`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 98.9, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ `1999`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 97.2, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ `2000`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 95.4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ `2001`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 93.4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ `2002`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 91.2, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ `2003`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 89, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+## $ `2004`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 86.7, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ `2005`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 84.4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ `2006`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, 82.3, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ `2007`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, 80.4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ `2008`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, 78.6, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ `2009`  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, 76.8, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ `2010`  &lt;dbl&gt; NA, NA, NA, NA, NA, 75.1, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ `2011`  &lt;dbl&gt; NA, NA, NA, NA, 73.4, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ `2012`  &lt;dbl&gt; NA, NA, NA, 71.7, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ `2013`  &lt;dbl&gt; NA, NA, 69.9, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ `2014`  &lt;dbl&gt; NA, 68.1, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 12.9…
+## $ `2015`  &lt;dbl&gt; 66.3, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 12.5, NA…</code></pre>
+<p><code>spread()</code> will match on all possible combinations of columnns and values. “spread matches on all the remaining columns, so Afghanistan with ci_low of 52.7 is treated as a different observation than Afghanistan with ci_low of 55.7.”</p>
+<p>To fix this, we may have to merge some columns, i.e. merge ci_low, ci_hi and rate (the column we were trying to spread on) using <code>unite()</code></p>
+<pre class="r"><code>infmort_wide &lt;- infmort %&gt;%
+  unite(rate_ci, rate:ci_hi, sep = &quot;, &quot;) %&gt;%
+  spread(Year, rate_ci)
+
+glimpse(infmort_wide)</code></pre>
+<pre><code>## Rows: 194
+## Columns: 27
+## $ Country &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, &quot;Andorra&quot;, &quot;Angola&quot;, &quot;Antigua and Barbuda&quot;, &quot;Argentina&quot;, &quot;Armenia&quot;, &quot;Australi…
+## $ `1990`  &lt;chr&gt; &quot;122.5, 111.6, 135.5&quot;, &quot;35.1, 31.3, 39.2&quot;, &quot;39.7, 37.1, 42.3&quot;, &quot;7.5, 4.5, 12.7&quot;, &quot;133.5, 119.9, 151&quot;, &quot;24, 17.2, 3…
+## $ `1991`  &lt;chr&gt; &quot;118.3, 108, 129.9&quot;, &quot;33.7, 30.2, 37.6&quot;, &quot;38.8, 36.1, 41.6&quot;, &quot;7, 4.4, 11.3&quot;, &quot;133.5, 120.1, 150.4&quot;, &quot;22.6, 17.1, 3…
+## $ `1992`  &lt;chr&gt; &quot;114.4, 104.6, 125.2&quot;, &quot;32.5, 29.2, 36.2&quot;, &quot;38.1, 35.4, 41&quot;, &quot;6.5, 4.3, 10.1&quot;, &quot;133.5, 120.4, 150&quot;, &quot;21.5, 17, 27.…
+## $ `1993`  &lt;chr&gt; &quot;110.9, 101.4, 120.9&quot;, &quot;31.4, 28.2, 34.9&quot;, &quot;37.5, 34.9, 40.3&quot;, &quot;6.1, 4.1, 9&quot;, &quot;133.4, 120.3, 149.7&quot;, &quot;20.3, 16.7, …
+## $ `1994`  &lt;chr&gt; &quot;107.7, 98.6, 117.2&quot;, &quot;30.3, 27.1, 33.8&quot;, &quot;36.9, 34.6, 39.4&quot;, &quot;5.6, 3.9, 8&quot;, &quot;133.2, 120.1, 149.5&quot;, &quot;19.2, 16.3, 2…
+## $ `1995`  &lt;chr&gt; &quot;105, 96.2, 114.1&quot;, &quot;29.1, 26, 32.7&quot;, &quot;36.3, 34.2, 38.4&quot;, &quot;5.2, 3.8, 7.3&quot;, &quot;132.8, 119.7, 149.3&quot;, &quot;18, 15.8, 20.7&quot;…
+## $ `1996`  &lt;chr&gt; &quot;102.7, 94.5, 111.3&quot;, &quot;27.9, 24.8, 31.5&quot;, &quot;35.7, 34, 37.4&quot;, &quot;5, 3.6, 6.7&quot;, &quot;132.3, 119.1, 148.8&quot;, &quot;17.1, 15.3, 19.…
+## $ `1997`  &lt;chr&gt; &quot;100.7, 92.9, 109.1&quot;, &quot;26.8, 23.6, 30.4&quot;, &quot;35.1, 33.8, 36.5&quot;, &quot;4.6, 3.4, 6.1&quot;, &quot;131.5, 118.1, 148.1&quot;, &quot;16.2, 14.6,…
+## $ `1998`  &lt;chr&gt; &quot;98.9, 91.4, 107.2&quot;, &quot;25.5, 22.4, 29.2&quot;, &quot;34.7, 33.7, 35.8&quot;, &quot;4.3, 3.3, 5.7&quot;, &quot;130.6, 116.9, 147.3&quot;, &quot;15.3, 13.8, …
+## $ `1999`  &lt;chr&gt; &quot;97.2, 89.9, 105.4&quot;, &quot;24.4, 21.2, 28.1&quot;, &quot;34.4, 33.5, 35.2&quot;, &quot;4.1, 3.1, 5.3&quot;, &quot;129.5, 115.4, 146.6&quot;, &quot;14.5, 13, 16…
+## $ `2000`  &lt;chr&gt; &quot;95.4, 88.2, 103.6&quot;, &quot;23.2, 20, 27&quot;, &quot;33.9, 33.2, 34.7&quot;, &quot;3.9, 3, 5&quot;, &quot;128.3, 113.9, 145.8&quot;, &quot;13.8, 12.4, 15.3&quot;, &quot;…
+## $ `2001`  &lt;chr&gt; &quot;93.4, 86.3, 101.6&quot;, &quot;22.1, 18.8, 26&quot;, &quot;33.3, 32.7, 34&quot;, &quot;3.7, 2.9, 4.7&quot;, &quot;126.9, 112, 145.1&quot;, &quot;13, 11.7, 14.5&quot;, &quot;…
+## $ `2002`  &lt;chr&gt; &quot;91.2, 84.3, 99.3&quot;, &quot;21, 17.6, 25.1&quot;, &quot;32.4, 31.8, 33&quot;, &quot;3.5, 2.7, 4.4&quot;, &quot;125.5, 109.6, 144.6&quot;, &quot;12.3, 11, 13.7&quot;, …
+## $ `2003`  &lt;chr&gt; &quot;89, 82.1, 97&quot;, &quot;20, 16.5, 24.3&quot;, &quot;31.3, 30.7, 31.9&quot;, &quot;3.3, 2.6, 4.2&quot;, &quot;124.1, 107.3, 144.7&quot;, &quot;11.7, 10.4, 13&quot;, &quot;1…
+## $ `2004`  &lt;chr&gt; &quot;86.7, 79.9, 94.8&quot;, &quot;19.1, 15.4, 23.8&quot;, &quot;30.1, 29.5, 30.6&quot;, &quot;3.2, 2.5, 4.1&quot;, &quot;122.8, 104.4, 144.9&quot;, &quot;11, 9.8, 12.4…
+## $ `2005`  &lt;chr&gt; &quot;84.4, 77.7, 92.6&quot;, &quot;18.3, 14.2, 23.4&quot;, &quot;28.8, 28.3, 29.4&quot;, &quot;3.1, 2.4, 3.9&quot;, &quot;121.2, 101.1, 145.1&quot;, &quot;10.4, 9.3, 11…
+## $ `2006`  &lt;chr&gt; &quot;82.3, 75.5, 90.7&quot;, &quot;17.4, 13.2, 23.1&quot;, &quot;27.6, 27, 28.1&quot;, &quot;2.9, 2.3, 3.7&quot;, &quot;119.4, 97.6, 144.9&quot;, &quot;9.8, 8.6, 11.1&quot;,…
+## $ `2007`  &lt;chr&gt; &quot;80.4, 73.4, 88.9&quot;, &quot;16.7, 12.1, 22.9&quot;, &quot;26.4, 25.9, 26.9&quot;, &quot;2.8, 2.1, 3.7&quot;, &quot;117.1, 93.9, 145.2&quot;, &quot;9.2, 8, 10.6&quot;,…
+## $ `2008`  &lt;chr&gt; &quot;78.6, 71.2, 87.3&quot;, &quot;16, 11.2, 22.7&quot;, &quot;25.3, 24.8, 25.7&quot;, &quot;2.7, 2, 3.6&quot;, &quot;114.7, 89.9, 145.3&quot;, &quot;8.8, 7.5, 10.2&quot;, &quot;…
+## $ `2009`  &lt;chr&gt; &quot;76.8, 69, 86.1&quot;, &quot;15.4, 10.5, 22.6&quot;, &quot;24.3, 23.8, 24.7&quot;, &quot;2.6, 1.9, 3.6&quot;, &quot;112.2, 85.6, 145.9&quot;, &quot;8.2, 6.9, 9.8&quot;, …
+## $ `2010`  &lt;chr&gt; &quot;75.1, 66.9, 85.1&quot;, &quot;14.8, 9.8, 22.4&quot;, &quot;23.5, 23, 23.9&quot;, &quot;2.5, 1.7, 3.5&quot;, &quot;109.6, 81.3, 146.8&quot;, &quot;7.7, 6.2, 9.5&quot;, &quot;…
+## $ `2011`  &lt;chr&gt; &quot;73.4, 64.4, 84.2&quot;, &quot;14.3, 9.1, 22.3&quot;, &quot;22.8, 22.4, 23.3&quot;, &quot;2.4, 1.6, 3.5&quot;, &quot;106.8, 76.9, 147.5&quot;, &quot;7.2, 5.7, 9.2&quot;,…
+## $ `2012`  &lt;chr&gt; &quot;71.7, 61.6, 83.7&quot;, &quot;13.8, 8.5, 22.2&quot;, &quot;22.4, 22, 22.9&quot;, &quot;2.3, 1.5, 3.5&quot;, &quot;104.1, 72.9, 148.3&quot;, &quot;6.8, 5.1, 9&quot;, &quot;12…
+## $ `2013`  &lt;chr&gt; &quot;69.9, 58.7, 83.5&quot;, &quot;13.3, 7.9, 22.1&quot;, &quot;22.1, 21.7, 22.7&quot;, &quot;2.2, 1.5, 3.5&quot;, &quot;101.4, 68.8, 149.2&quot;, &quot;6.4, 4.6, 8.8&quot;,…
+## $ `2014`  &lt;chr&gt; &quot;68.1, 55.7, 83.6&quot;, &quot;12.9, 7.5, 22.1&quot;, &quot;22, 21.3, 22.7&quot;, &quot;2.1, 1.4, 3.5&quot;, &quot;98.8, 65.1, 150&quot;, &quot;6.1, 4.3, 8.7&quot;, &quot;11.…
+## $ `2015`  &lt;chr&gt; &quot;66.3, 52.7, 83.9&quot;, &quot;12.5, 7, 22.2&quot;, &quot;21.9, 20.8, 23&quot;, &quot;2.1, 1.3, 3.5&quot;, &quot;96, 61.6, 150.1&quot;, &quot;5.8, 3.9, 8.5&quot;, &quot;11.1,…</code></pre>
+<p>##separate() <code>separate()</code> splits a column at the first non-alphanumeric characters or whatever you specify as the separator value (<code>sep=""</code>)</p>
+<p>Arguments: 1. columnn name 2. <code>into = c("newcol1","newcol2")</code> (provide both new column names) 3. <code>sep = ""</code>, optional (either the character you want to use as a split, i.e. “/”, or an integer as an index, i.e. 1, -2 (second from back), etc. without quotes) 4. <code>remove =</code> If TRUE, remove input column from output data frame. 5. <code>extra = ""</code>, defines what to do if there is an extra value in a column that doesn’t fit (“warn” - warns then drops, “drop” - drops with no warning, “merge” - only splits at most length(into) times) 6. <code>fill = ""</code>, defines what to do if there is a blank space (“warn” - warns thenn fills from right, “right” - fills from right, “left” - fills from left)</p>
+<p><code>separte()</code> will leave the columns in the type that they are. We can ask it to guess a more fitting format with <code>convert = TRUE</code>.</p>
+<pre class="r"><code>tibble(x = c(&quot;a,b,c&quot;, &quot;d,e,f,g&quot;, &quot;h,i,j&quot;)) %&gt;% 
+  separate(x, c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;), extra=&quot;drop&quot;)</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   one   two   three
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+## 1 a     b     c    
+## 2 d     e     f    
+## 3 h     i     j</code></pre>
+<pre class="r"><code>tibble(x = c(&quot;a,b,c&quot;, &quot;d,e&quot;, &quot;f,g,i&quot;)) %&gt;% 
+  separate(x, c(&quot;one&quot;, &quot;two&quot;, &quot;three&quot;), fill = &quot;left&quot;)</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   one   two   three
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+## 1 a     b     c    
+## 2 &lt;NA&gt;  d     e    
+## 3 f     g     i</code></pre>
+<p>Let’s return to matmort: The columnn matmort$stats has several pieces of information in it: the rate, the ci_low, and the ci_hi. We want to separate this into several columns with <code>separate()</code>. We will use the default of separating at the first non-alphanumeric character.</p>
+<p>First, we have to do a couple other things: we want to remove the blank spaces from the stats column with the <code>mutate()</code> function and the <code>gsub()</code> function. <code>mutate()</code> creates a new column based on the parameters you give it (and can also replace the columnn with a nenw version of itself) <code>gsub()</code> is like grep/grepl but the tidyverse way - used for pattern matching and replacement Ex: gsub(pattern, replacement, x) Note: there also exists <code>sub()</code> for replacing just the first instance of a pattern. Also, you can use regexs for patterns.</p>
+<pre class="r"><code>matmort_split &lt;- matmort_long %&gt;%
+  mutate(stats = gsub(&quot; &quot;, &quot;&quot;, stats)) %&gt;%
+  separate(stats, c(&quot;rate&quot;, &quot;ci_low&quot;, &quot;ci_hi&quot;), extra=&quot;drop&quot;, convert = TRUE)
+
+glimpse(matmort_split)</code></pre>
+<pre><code>## Rows: 543
+## Columns: 5
+## $ Country &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Albania&quot;, &quot;Algeria&quot;, &quot;Angola&quot;, &quot;Argentina&quot;, &quot;Armenia&quot;, &quot;Australia&quot;, &quot;Austria&quot;, &quot;Azerbaijan&quot;, &quot;Baha…
+## $ Year    &lt;chr&gt; &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1990&quot;, &quot;1…
+## $ rate    &lt;int&gt; 1340, 71, 216, 1160, 72, 58, 8, 8, 64, 46, 26, 569, 58, 33, 9, 54, 576, 945, 425, 28, 243, 104, 35, 25, 727, 1220,…
+## $ ci_low  &lt;int&gt; 878, 58, 141, 627, 64, 51, 7, 7, 56, 34, 20, 446, 47, 28, 7, 45, 453, 697, 340, 23, 149, 91, 25, 21, 549, 848, 141…
+## $ ci_hi   &lt;int&gt; 1950, 88, 327, 2020, 80, 65, 9, 10, 74, 61, 33, 715, 72, 38, 10, 65, 726, 1260, 527, 33, 352, 119, 48, 29, 978, 17…</code></pre>
+<p>Note that we’ve set <code>extra="drop"</code> because splitting at every alphanumeric character would have provided four values, the fourth always empty, and we only specified three columns. The default would also have been to drop, but first to warn, so we basically just turned off the warning.</p>
+<p>We set <code>convert = TRUE</code> becuase otherwise, all columnns were interpretted as character strings.</p>
+<p>We can also use <code>separate()</code> on infmort. Column 3 has a long name so we refer to it by number.</p>
+<pre class="r"><code>infmort_split &lt;- infmort %&gt;%
+  separate(
+    col = 3, 
+    into = c(&quot;rate&quot;, &quot;ci_low&quot;, &quot;ci_hi&quot;), 
+    extra = &quot;drop&quot;, 
+    sep = &quot;(\\[|-|])&quot;,
+    convert = TRUE
+  )</code></pre>
+<pre><code>## Warning: Expected 3 pieces. Missing pieces filled with `NA` in 5044 rows [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+## 18, 19, 20, ...].</code></pre>
+<pre class="r"><code>glimpse(infmort_split)</code></pre>
+<pre><code>## Rows: 5,044
+## Columns: 5
+## $ Country &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanis…
+## $ Year    &lt;dbl&gt; 2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997, …
+## $ rate    &lt;dbl&gt; 66.3, 68.1, 69.9, 71.7, 73.4, 75.1, 76.8, 78.6, 80.4, 82.3, 84.4, 86.7, 89.0, 91.2, 93.4, 95.4, 97.2, 98.9, 100.7,…
+## $ ci_low  &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+## $ ci_hi   &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…</code></pre>
+<p>Note: we have to define what separators to use here. Otherwise, full stops (here, our decimal separator) would also be separated at. “You can use regular expressions to separate complex columns. Here, we want to separate on dashes and brackets. You can separate on a list of delimiters by putting them in parentheses, separated by “|”. It’s a little more complicated because brackets have a special meaning in regex, so you need to “escape” the left one with two backslashes “\”."</p>
+<p>We also set <code>convert = TRUE</code> to set the column types to more sensible options (this is important to keep an eye on!)</p>
+<p>##unite() <code>unite()</code> joins two columns. By default, it will separate them with an underscore, but you can change this with the <code>sep=</code>argument.</p>
+<p>Arguments: 1. name of new column 2. columnn 1 to unite 3. columnn 2 to unite 4. <code>sep = ""</code> (set to nothing to have no character inserted in between the two columnn values) 5. <code>remove =</code>If TRUE, remove input column from output data frame. 6. <code>extra = ""</code>, defines what to do if there is an extra value in a column that doesn’t fit (“warn” - warns then drops, “drop” - drops with no warning, “merge” - only splits at most length(into) times) 7. <code>fill = ""</code>, defines what to do if there is a blank space (“warn” - warns thenn fills from right, “right” - fills from right, “left” - fills from left)</p>
+<pre class="r"><code>infmort_united &lt;- infmort %&gt;%
+  unite(rate_ci, rate, ci_low, ci_hi, sep = &quot;, &quot;)
+
+glimpse(infmort_united)</code></pre>
+<pre><code>## Rows: 5,044
+## Columns: 3
+## $ Country &lt;chr&gt; &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanistan&quot;, &quot;Afghanis…
+## $ Year    &lt;dbl&gt; 2015, 2014, 2013, 2012, 2011, 2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000, 1999, 1998, 1997, …
+## $ rate_ci &lt;chr&gt; &quot;66.3, 52.7, 83.9&quot;, &quot;68.1, 55.7, 83.6&quot;, &quot;69.9, 58.7, 83.5&quot;, &quot;71.7, 61.6, 83.7&quot;, &quot;73.4, 64.4, 84.2&quot;, &quot;75.1, 66.9, 8…</code></pre>
+<p>#Missing values Explicitly missing values are marked with NA. Implicitly missing values are where something has been skipped (i.e. a year)</p>
+<p>##na.rm <code>na.rm = TRUE</code> Can be used in the <code>gather()</code> function, for example</p>
+<p>##complete() “The way that a dataset is represented can make implicit values explicit. For example, we can make the implicit missing value explicit by putting years in the columns:”</p>
+<p>Also, <code>complete()</code> makes missing values explicit. It finds all unique combinations of the two columns and tries to fill them, inserting NAs when necessary. <code>stocks %&gt;%    complete(year, qtr)</code></p>
+<p>##fill() If there are missing values due to data entry, where the entry in a column above (i.e. name) is assumed to carry down for a couple rows below, use <code>fill()</code>, with the column name as the argument.</p>
+<p><code>treatment %&gt;%    fill(person)   complete(year, qtr)</code></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

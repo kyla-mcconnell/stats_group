@@ -35,7 +35,7 @@ Correlation shows how whether and how strongly two variables are related, i.e. a
 ## Covariance
 The covariance between two variables looks at each point's variation from the mean of that variable, (i.e. it checks if the value of Value X of Variable A differs from the mean of Variable A in the same or exactly the opposite way as Value X of Variable B differs from the mean of Variable B).
 
-To test if the covaranice goes in the same direction (positive) or the opposite direction (negative), the two deviations are multiplied together: If the result is positive (either by multiplying two postitives or two negatives), the variables covary positively. If it is negative (one is positive and the other is negative), the variables covary negatively.
+To test if the covariance goes in the same direction (positive) or the opposite direction (negative), the two deviations are multiplied together: If the result is positive (either by multiplying two postitives or two negatives), the variables covary positively. If it is negative (one is positive and the other is negative), the variables covary negatively.
 
 Problem: No standard measurement/depends on the scale of the variables. Thus, we cannot compare covariances between different datasets on different scales.
 
