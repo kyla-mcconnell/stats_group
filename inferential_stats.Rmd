@@ -1,0 +1,264 @@
+---
+title: "Inferential Statistics"
+author: "Kyla McConnell"
+date: "8/27/2020"
+html_notebook:
+  toc: true
+  theme: cosmo
+---
+
+Based on Chapters 9 - 11 of [Winter 2020 - Statistics for Linguists](https://www.amazon.de/Statistics-Linguists-Introduction-Using-R/dp/113805609X/ref=sxts_sxwds-bia-wc-drs1_0?cv_ct_cx=Statistics+for+Linguists%3A+An+Introduction+Using+R&dchild=1&keywords=Statistics+for+Linguists%3A+An+Introduction+Using+R&pd_rd_i=113805609X&pd_rd_r=ad49314f-6c56-4dfd-af51-df73083c56ff&pd_rd_w=FT3O0&pd_rd_wg=1F20M&pf_rd_p=4550c966-ade8-45b3-8233-8740fa4921e3&pf_rd_r=KHZ507X5ZP0TFNMBMRTJ&psc=1&qid=1598614090&sr=1-1-95fb4f3c-fa15-48dc-bab1-67b29ab0ca13).
+
+# Inferential statistics in a regression context
+
+## Effect size 
+
+### Cohen's d
+
+d = x̅ 1- x̅ 2?/s
+
+Mean of group 1 minus mean of group 2 divided by standard deviation.
+
+Considers the magnitude of the effect (difference in means) and the variability in the data (standard deviation).  Grows if the standard deviation is bigger or if the difference in means is bigger
+
+Measure of effect size
+
+d = |.02| -> small effect
+d = |.05| -> medium effect
+d = |.08| -> large effect
+
+### Pearson's r 
+
+r = s^2x,y / sx sy
+
+Covariance divided by standard deviations of both groups multiplied together.
+
+Covariance measures the x-distance of each data point from the x-mean and the y-distance of each data point from the y-mean. If a point is much above or much below both, the number grows (or vice versa).
+
+Measure of correlation and/or effect size
+
+## Standard errors and confidence intervals
+
+### Standard error 
+
+SE = s/root(N)
+
+Considers variability in the data (standard deviation) and sample size (root(N)). 
+
+Differs to standard deviation because it considers the sample size. Thus it is is the population-level estimate/equivalent of the sample-level standard error.
+
+### Confidence interval
+
+Confidence intervals show 1.96 standard errors above and below the mean. 1.96 is derived from the 0.05 significance level standard in frequentist statistics. 
+
+CI = [x̅ - 1.96 * SE, x̅ + 1.96 * SE]
+
+Confidence intervals will include the true population mean 95% of the time. 
+
+## Significance
+
+### Null hypothesis 
+
+Null hypothesis, H0: mu1 = mu2
+i.e. Mean of group one = mean of group two, there is no difference between groups (on the population level, which is why we use mu, not x-bar)
+
+The null hypothesis cannot be found true or false. What you measure is the current data's incompatibility with the null hypothesis. 
+
+If you find evidence for the null hypothesis, this does not mean that there is no effect (especially, for example, your sample size is small)
+
+### t-statistic
+
+t = x̅1 - x̅2 / SE
+
+Difference in group means divided by the standard error. 
+
+The standard error considers the sample size (unlike the standard deviation used in Cohen's d).
+
+Considers magnitude of the effect (numerator grows if the difference in group means grows), the variability in the data (numerator of the SE) and the effect size (denominators of the SE). 
+
+t-statistics can be used to compute p-values. The t-distribution is similar to the normal distribution, just with thicker tails. A 0.05 significance level computes to about t = |1.98|
+
+### p-values
+
+p-values do not measure the likelihood of the null hypothesis being true or the strength of an effect. 
+
+### Type I and Type II error
+
+Type I error: getting a significant effect although the null hypothesis is true at the population level -- false positive
+Alpha (α) = the probability of a type I error over the long run / our willingness to accept a type I error
+
+Type II error: failing to get a significant effect although the null hypothesis is not true at the population level -- false negative
+Beta (β) = the probability of a type II error over the long run / our willingness to accept a type II error
+
+Statistical power = 1 - beta (sometimes represented by the pi symbol)
+Power is increased by having a large sample size, decreasing variability in the data (smaller s), or increasing the effect size.
+
+Type M error: error in estimating the magnitude of an effect (i.e. much larger than it really is), often caused by small sample sizes
+Type S error: "failure to capture the correct sign of an effect", often caused by small sample sizes
+
+## Multiple testing
+
+The more tests you carry out, the more likely you are to commit a Type I error (they all have positive chances, and these add up).
+
+Family-wise error rate: likelihood of conducting a Type I error over multiple tests
+
+FWER = 1 - (1 - 0.05)^k
+where k is the number of tests.
+
+If you conduct 20 tests, the family-wise error rate quickly shoots up to 64%.
+
+Bonferonni correction: Divide the alpha level by the number of tests. If it is confusing to the audience to see very small p-values that are not treated as significant, you can also adjust the p-values themselves:
+
+```{r}
+p.adjust(0.03, method="bonferroni", n=2)
+```
+
+### Stopping rules
+
+If the null hypothesis is true, p-values are uniformly distributed from 0 to 1, so any p-value is equally as likely as any other. 
+
+#Application to modeling
+
+```{r}
+library(tidyverse)
+library(broom)
+
+icon <- read_csv("data/perry_winter_2017_iconicity.csv")
+
+icon <- icon %>% 
+  mutate(SER_z = scale(SER),
+         CorteseImag_z =  scale(CorteseImag),
+         Syst_z = scale(Syst),
+         Freq_z = scale(Freq))
+
+icon_mdl_z <- lm(Iconicity ~ SER_z + CorteseImag_z + Syst_z + Freq_z , data = icon)
+
+tidy(icon_mdl_z) %>% 
+  mutate(p.value = format.pval(p.value, 4),
+         estimate = round(estimate, 2),
+         std.error = round(std.error, 2),
+         statistic = round(statistic, 2))
+```
+
+Remember what the p-value means: how likely/expected it is that you would find a slope as or more extreme if the true population slope was 0.
+
+Suggestion on how to write up: "SER was positively associated with  iconicity (+0.53, SE = 0.04, p < 0.001)" and "for each inncnrease inn nsensory experience rating by one standard deviation, iconicity ratings increased by 0.52 (b = 0.53, SE = 0.04, p < 0.001)".
+
+###  Dot and whisker plot  
+
+```{r}
+mycoefs <- tidy(icon_mdl_z, conf.int = TRUE) %>%  #conf.int incluseds 95% conf. intervals  in output
+  filter(term != "(Intercept)") 
+
+pred_order <- arrange(mycoefs, estimate)$term
+
+mycoefs <- mycoefs %>% 
+  mutate(term = factor(term, levels = pred_order))
+  
+ggplot(aes(x = term, y = estimate), data = mycoefs) +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  coord_flip() +
+  theme_minimal()
+```
+
+### Multilevel categorical predictors
+
+```{r}
+senses <- read_csv("data/winter_2016_senses_valence.csv")
+
+senses_mdl <- lm(Val ~ Modality, data = senses)
+
+tidy(senses_mdl) %>% 
+  mutate(estimate = round(estimate, 2), 
+         std.error = round(std.error, 2),
+         statistics = round(statistic, 2),
+         p.value = format.pval(p.value, 4))
+
+
+```
+
+Reference level: Sight
+Thus, p-values reflect H0 that the difference between Sight and the given level is 0. Thus, we are missing a lot of info here.
+
+Compare to null model:
+```{r}
+senses_null <- lm(Val ~ 1, data = senses) #1 is a placeholder for intercept only
+
+anova(senses_null, senses_mdl)
+```
+
+Anova "assesses the variance that can be attributed to a factor of interest (such as Modality) against the overall variance", used here for model comparison. 
+
+Here, an F statistic is used, because we are comparing variances (vs. the t-statistic, which is used for group differences and regression coefficients).  
+
+Report as: "There was a statistically reliable effect of modality (F(4,400) = 17.03, p < 0.0001)"
+
+Res.Df are the degrees of freedom. The more parameters you estimate, the more df you lose. Here, 400 is the number of independent datapoints. The more complex model estimates 4 coefficients more than the null model. 
+
+You can also wrap anova() around the model name to automatically compare it to the null model -- you don't actually have to specify the null model.
+
+### glance()
+
+```{r}
+glance(senses_mdl)
+```
+
+Since there is only one predictor here, we get the same output as with the anova. If it were more complicated, you would get the statistics for the full model with all predictors compared to a null model. Basically this asks "how well do all predictors together capture variance in the response?" or "assuming the full model and the null model perform equally well (the null hypothesis), how surprising is the amount of sample variance explained by the full model?"(186)
+
+For all pairwise differences, you can use the emmeans package (see Bodo p.186-188 for info and criticism). On the other hand, if only one of the comparison levels is theoretically motivated, you can lump some levels together and thus perform only one test (p.188-200).
+
+### predict()
+
+```{r}
+newpreds <- tibble(Modality = sort(unique(senses$Modality)))
+
+sense_preds <- predict(senses_mdl, newpreds, interval = "confidence") #automatically returns CIs
+
+sense_preds <- cbind(newpreds, sense_preds) #adds the label back in
+
+sense_preds
+```
+
+### Plot means and CIs
+
+```{r}
+sense_order <- arrange(sense_preds, fit)$Modality
+sense_preds <- mutate(sense_preds, Modality = factor(Modality, levels = sense_order))
+
+ggplot(aes(x=Modality, y=fit), data=sense_preds) +
+  geom_point() +
+  geom_errorbar(aes(ymin=lwr, ymax=upr)) #formatting suggestions p194
+```
+
+## Plotting continuous predictors
+
+```{r}
+ELP  <- read_csv("data/ELP_frequency.csv")
+
+ELP <- ELP %>% 
+  mutate(Log10Freq = log10(Freq))
+
+ELP_mdl <- lm(RT ~ Log10Freq, ELP)
+
+#generate predictions
+newdata <- tibble(Log10Freq = seq(0,5,0.01))
+preds <- predict(ELP_mdl, newdata, interval = "confidence")
+
+preds <- cbind(newdata, preds) #add labels back in
+
+preds
+```
+
+```{r}
+ggplot(aes(x=Log10Freq, y=fit), data=preds) +
+  geom_ribbon(aes(ymin=lwr, ymax=upr), fill="grey", alpha=0.5) +
+  geom_line() +
+  geom_text(aes(y=RT, label=Word), data=ELP) +
+  theme_minimal()
+```
+The grey region shows the model lines you would be expected to get 95% of the time when sampling from the same population. 
+
+
+

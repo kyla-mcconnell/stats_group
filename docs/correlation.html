@@ -522,7 +522,7 @@ boot_kendall</code></pre>
 ## 
 ## Bootstrap Statistics :
 ##       original       bias    std. error
-## t1* -0.3002413 -0.002799446  0.09493037</code></pre>
+## t1* -0.3002413 -0.003754975  0.09830715</code></pre>
 <pre class="r"><code>boot.ci(boot_kendall) #gives the confidence interval</code></pre>
 <pre><code>## Warning in boot.ci(boot_kendall): bootstrap variances needed for studentized intervals</code></pre>
 <pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
@@ -533,10 +533,10 @@ boot_kendall</code></pre>
 ## 
 ## Intervals : 
 ## Level      Normal              Basic         
-## 95%   (-0.4835, -0.1114 )   (-0.4909, -0.1147 )  
+## 95%   (-0.4892, -0.1038 )   (-0.4949, -0.1090 )  
 ## 
 ## Level     Percentile            BCa          
-## 95%   (-0.4858, -0.1096 )   (-0.4756, -0.0934 )  
+## 95%   (-0.4915, -0.1056 )   (-0.4726, -0.0830 )  
 ## Calculations and Intervals on Original Scale</code></pre>
 <p>##Partial correlations Use pcor() and pcor.test()</p>
 </div>
@@ -589,11 +589,14 @@ corrplot(bigram_cor, type=&quot;upper&quot;,  method = &quot;number&quot;, tl.ce
 <p>Form: corrplot(as.matrix(data), histogram=TRUE, method=“string”) data: must be a matrix or converted to a matrix histogram: TRUE/FALSE method: “spearman”, “pearson”, “kendall”, or multiple c(“spearman”, “pearson”)</p>
 <p>NOTE: Significance stars are for your information but should not be relied upon because the p-values should be Bonferonni-corrected first.</p>
 <pre class="r"><code>chart.Correlation(as.matrix(examData2),  method = &quot;spearman&quot;)</code></pre>
-<pre><code>## Warning in cor.test.default(as.numeric(x), as.numeric(y), method = method): Cannot compute exact p-value with ties
+<pre><code>## Warning in cor.test.default(as.numeric(x), as.numeric(y), method = method): Cannot compute exact
+## p-value with ties
 
-## Warning in cor.test.default(as.numeric(x), as.numeric(y), method = method): Cannot compute exact p-value with ties
+## Warning in cor.test.default(as.numeric(x), as.numeric(y), method = method): Cannot compute exact
+## p-value with ties
 
-## Warning in cor.test.default(as.numeric(x), as.numeric(y), method = method): Cannot compute exact p-value with ties</code></pre>
+## Warning in cor.test.default(as.numeric(x), as.numeric(y), method = method): Cannot compute exact
+## p-value with ties</code></pre>
 <p><img src="correlation_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
 <div id="ggpairs" class="section level2">
@@ -603,11 +606,14 @@ corrplot(bigram_cor, type=&quot;upper&quot;,  method = &quot;number&quot;, tl.ce
 <p>data: Dataset of variables upper: Plots the correlation coefficients of the given method using the cor plot, continuous meaning that the variables are continuous.</p>
 <p>See documentation for the rest of the very complicated form.</p>
 <pre class="r"><code>ggpairs(examData2, upper = list(continuous = wrap(&#39;cor&#39;, method = &quot;spearman&quot;)))</code></pre>
-<pre><code>## Warning in cor.test.default(x, y, method = method, use = use): Cannot compute exact p-value with ties
+<pre><code>## Warning in cor.test.default(x, y, method = method, use = use): Cannot compute exact p-value with
+## ties
 
-## Warning in cor.test.default(x, y, method = method, use = use): Cannot compute exact p-value with ties
+## Warning in cor.test.default(x, y, method = method, use = use): Cannot compute exact p-value with
+## ties
 
-## Warning in cor.test.default(x, y, method = method, use = use): Cannot compute exact p-value with ties</code></pre>
+## Warning in cor.test.default(x, y, method = method, use = use): Cannot compute exact p-value with
+## ties</code></pre>
 <p><img src="correlation_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
 <div id="pairs.panels" class="section level2">

@@ -14,11 +14,12 @@ The following index of notes is meant as a helpful reference guide. Nearly all m
     - [Notes P2: Tidy data, splitting and pivoting columns](tidying.html) - Warning: See pivot_longer and pivot_wider instead of gather and spread
 - Model assumptions
 - Graphing with ggplot
-- [Correlation and correlation matrices](correlation.html)
+- Correlation and correlation matrices
 - Comparing means: t-test
 - Comparing group means: ANOVA
 - Tests of independence: chi-square
 - Regression
 - Logistic Regression
+- [Inferential statistics and plotting models](inferential_stats.html)
 
 </font>

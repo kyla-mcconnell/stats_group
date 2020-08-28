@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Kyla McConnell" />
+
+
+<title>Inferential Statistics</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 54px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h2 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h3 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h4 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h5 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.section h6 {
+  padding-top: 59px;
+  margin-top: -59px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Stats Group</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="calendar.html">Schedule</a>
+</li>
+<li>
+  <a href="bytopic.html">Notes &amp; Exercises</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Inferential Statistics</h1>
+<h4 class="author">Kyla McConnell</h4>
+<h4 class="date">8/27/2020</h4>
+
+</div>
+
+
+<p>Based on Chapters 9 - 11 of <a href="https://www.amazon.de/Statistics-Linguists-Introduction-Using-R/dp/113805609X/ref=sxts_sxwds-bia-wc-drs1_0?cv_ct_cx=Statistics+for+Linguists%3A+An+Introduction+Using+R&amp;dchild=1&amp;keywords=Statistics+for+Linguists%3A+An+Introduction+Using+R&amp;pd_rd_i=113805609X&amp;pd_rd_r=ad49314f-6c56-4dfd-af51-df73083c56ff&amp;pd_rd_w=FT3O0&amp;pd_rd_wg=1F20M&amp;pf_rd_p=4550c966-ade8-45b3-8233-8740fa4921e3&amp;pf_rd_r=KHZ507X5ZP0TFNMBMRTJ&amp;psc=1&amp;qid=1598614090&amp;sr=1-1-95fb4f3c-fa15-48dc-bab1-67b29ab0ca13">Winter 2020 - Statistics for Linguists</a>.</p>
+<div id="inferential-statistics-in-a-regression-context" class="section level1">
+<h1>Inferential statistics in a regression context</h1>
+<div id="effect-size" class="section level2">
+<h2>Effect size</h2>
+<div id="cohens-d" class="section level3">
+<h3>Cohen’s d</h3>
+<p>d = x̅ 1- x̅ 2?/s</p>
+<p>Mean of group 1 minus mean of group 2 divided by standard deviation.</p>
+<p>Considers the magnitude of the effect (difference in means) and the variability in the data (standard deviation). Grows if the standard deviation is bigger or if the difference in means is bigger</p>
+<p>Measure of effect size</p>
+<p>d = |.02| -&gt; small effect d = |.05| -&gt; medium effect d = |.08| -&gt; large effect</p>
+</div>
+<div id="pearsons-r" class="section level3">
+<h3>Pearson’s r</h3>
+<p>r = s^2x,y / sx sy</p>
+<p>Covariance divided by standard deviations of both groups multiplied together.</p>
+<p>Covariance measures the x-distance of each data point from the x-mean and the y-distance of each data point from the y-mean. If a point is much above or much below both, the number grows (or vice versa).</p>
+<p>Measure of correlation and/or effect size</p>
+</div>
+</div>
+<div id="standard-errors-and-confidence-intervals" class="section level2">
+<h2>Standard errors and confidence intervals</h2>
+<div id="standard-error" class="section level3">
+<h3>Standard error</h3>
+<p>SE = s/root(N)</p>
+<p>Considers variability in the data (standard deviation) and sample size (root(N)).</p>
+<p>Differs to standard deviation because it considers the sample size. Thus it is is the population-level estimate/equivalent of the sample-level standard error.</p>
+</div>
+<div id="confidence-interval" class="section level3">
+<h3>Confidence interval</h3>
+<p>Confidence intervals show 1.96 standard errors above and below the mean. 1.96 is derived from the 0.05 significance level standard in frequentist statistics.</p>
+<p>CI = [x̅ - 1.96 * SE, x̅ + 1.96 * SE]</p>
+<p>Confidence intervals will include the true population mean 95% of the time.</p>
+</div>
+</div>
+<div id="significance" class="section level2">
+<h2>Significance</h2>
+<div id="null-hypothesis" class="section level3">
+<h3>Null hypothesis</h3>
+<p>Null hypothesis, H0: mu1 = mu2 i.e. Mean of group one = mean of group two, there is no difference between groups (on the population level, which is why we use mu, not x-bar)</p>
+<p>The null hypothesis cannot be found true or false. What you measure is the current data’s incompatibility with the null hypothesis.</p>
+<p>If you find evidence for the null hypothesis, this does not mean that there is no effect (especially, for example, your sample size is small)</p>
+</div>
+<div id="t-statistic" class="section level3">
+<h3>t-statistic</h3>
+<p>t = x̅1 - x̅2 / SE</p>
+<p>Difference in group means divided by the standard error.</p>
+<p>The standard error considers the sample size (unlike the standard deviation used in Cohen’s d).</p>
+<p>Considers magnitude of the effect (numerator grows if the difference in group means grows), the variability in the data (numerator of the SE) and the effect size (denominators of the SE).</p>
+<p>t-statistics can be used to compute p-values. The t-distribution is similar to the normal distribution, just with thicker tails. A 0.05 significance level computes to about t = |1.98|</p>
+</div>
+<div id="p-values" class="section level3">
+<h3>p-values</h3>
+<p>p-values do not measure the likelihood of the null hypothesis being true or the strength of an effect.</p>
+</div>
+<div id="type-i-and-type-ii-error" class="section level3">
+<h3>Type I and Type II error</h3>
+<p>Type I error: getting a significant effect although the null hypothesis is true at the population level – false positive Alpha (α) = the probability of a type I error over the long run / our willingness to accept a type I error</p>
+<p>Type II error: failing to get a significant effect although the null hypothesis is not true at the population level – false negative Beta (β) = the probability of a type II error over the long run / our willingness to accept a type II error</p>
+<p>Statistical power = 1 - beta (sometimes represented by the pi symbol) Power is increased by having a large sample size, decreasing variability in the data (smaller s), or increasing the effect size.</p>
+<p>Type M error: error in estimating the magnitude of an effect (i.e. much larger than it really is), often caused by small sample sizes Type S error: “failure to capture the correct sign of an effect”, often caused by small sample sizes</p>
+</div>
+</div>
+<div id="multiple-testing" class="section level2">
+<h2>Multiple testing</h2>
+<p>The more tests you carry out, the more likely you are to commit a Type I error (they all have positive chances, and these add up).</p>
+<p>Family-wise error rate: likelihood of conducting a Type I error over multiple tests</p>
+<p>FWER = 1 - (1 - 0.05)^k where k is the number of tests.</p>
+<p>If you conduct 20 tests, the family-wise error rate quickly shoots up to 64%.</p>
+<p>Bonferonni correction: Divide the alpha level by the number of tests. If it is confusing to the audience to see very small p-values that are not treated as significant, you can also adjust the p-values themselves:</p>
+<pre class="r"><code>p.adjust(0.03, method=&quot;bonferroni&quot;, n=2)</code></pre>
+<pre><code>## [1] 0.06</code></pre>
+<div id="stopping-rules" class="section level3">
+<h3>Stopping rules</h3>
+<p>If the null hypothesis is true, p-values are uniformly distributed from 0 to 1, so any p-value is equally as likely as any other.</p>
+<p>#Application to modeling</p>
+<pre class="r"><code>library(tidyverse)
+library(broom)
+
+icon &lt;- read_csv(&quot;data/perry_winter_2017_iconicity.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Word = col_character(),
+##   POS = col_character(),
+##   SER = col_double(),
+##   CorteseImag = col_double(),
+##   Conc = col_double(),
+##   Syst = col_double(),
+##   Freq = col_double(),
+##   Iconicity = col_double()
+## )</code></pre>
+<pre class="r"><code>icon &lt;- icon %&gt;% 
+  mutate(SER_z = scale(SER),
+         CorteseImag_z =  scale(CorteseImag),
+         Syst_z = scale(Syst),
+         Freq_z = scale(Freq))
+
+icon_mdl_z &lt;- lm(Iconicity ~ SER_z + CorteseImag_z + Syst_z + Freq_z , data = icon)
+
+tidy(icon_mdl_z) %&gt;% 
+  mutate(p.value = format.pval(p.value, 4),
+         estimate = round(estimate, 2),
+         std.error = round(std.error, 2),
+         statistic = round(statistic, 2))</code></pre>
+<pre><code>## # A tibble: 5 x 5
+##   term          estimate std.error statistic p.value
+##   &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  
+## 1 (Intercept)       1.15      0.03     33.3  4      
+## 2 SER_z             0.53      0.04     12.5  4      
+## 3 CorteseImag_z    -0.42      0.04    -10.7  4      
+## 4 Syst_z            0.06      0.03      1.79 4      
+## 5 Freq_z           -0.36      0.11     -3.2  4</code></pre>
+<p>Remember what the p-value means: how likely/expected it is that you would find a slope as or more extreme if the true population slope was 0.</p>
+<p>Suggestion on how to write up: “SER was positively associated with iconicity (+0.53, SE = 0.04, p &lt; 0.001)” and “for each inncnrease inn nsensory experience rating by one standard deviation, iconicity ratings increased by 0.52 (b = 0.53, SE = 0.04, p &lt; 0.001)”.</p>
+</div>
+<div id="dot-and-whisker-plot" class="section level3">
+<h3>Dot and whisker plot</h3>
+<pre class="r"><code>mycoefs &lt;- tidy(icon_mdl_z, conf.int = TRUE) %&gt;%  #conf.int incluseds 95% conf. intervals  in output
+  filter(term != &quot;(Intercept)&quot;) 
+
+pred_order &lt;- arrange(mycoefs, estimate)$term
+
+mycoefs &lt;- mycoefs %&gt;% 
+  mutate(term = factor(term, levels = pred_order))
+  
+ggplot(aes(x = term, y = estimate), data = mycoefs) +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  coord_flip() +
+  theme_minimal()</code></pre>
+<p><img src="inferential_stats_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="multilevel-categorical-predictors" class="section level3">
+<h3>Multilevel categorical predictors</h3>
+<pre class="r"><code>senses &lt;- read_csv(&quot;data/winter_2016_senses_valence.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Word = col_character(),
+##   Modality = col_character(),
+##   Val = col_double()
+## )</code></pre>
+<pre class="r"><code>senses_mdl &lt;- lm(Val ~ Modality, data = senses)
+
+tidy(senses_mdl) %&gt;% 
+  mutate(estimate = round(estimate, 2), 
+         std.error = round(std.error, 2),
+         statistics = round(statistic, 2),
+         p.value = format.pval(p.value, 4))</code></pre>
+<pre><code>## # A tibble: 5 x 6
+##   term          estimate std.error statistic p.value statistics
+##   &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;
+## 1 (Intercept)       5.58      0.02    295.   4           295.  
+## 2 ModalitySmell    -0.11      0.06     -1.93 4            -1.93
+## 3 ModalitySound    -0.17      0.04     -4.64 4            -4.64
+## 4 ModalityTaste     0.23      0.04      5.30 4             5.3 
+## 5 ModalityTouch    -0.05      0.04     -1.21 4            -1.21</code></pre>
+<p>Reference level: Sight Thus, p-values reflect H0 that the difference between Sight and the given level is 0. Thus, we are missing a lot of info here.</p>
+<p>Compare to null model:</p>
+<pre class="r"><code>senses_null &lt;- lm(Val ~ 1, data = senses) #1 is a placeholder for intercept only
+
+anova(senses_null, senses_mdl)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: Val ~ 1
+## Model 2: Val ~ Modality
+##   Res.Df    RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1    404 33.089                                  
+## 2    400 28.274  4    4.8145 17.028 6.616e-13 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Anova “assesses the variance that can be attributed to a factor of interest (such as Modality) against the overall variance”, used here for model comparison.</p>
+<p>Here, an F statistic is used, because we are comparing variances (vs. the t-statistic, which is used for group differences and regression coefficients).</p>
+<p>Report as: “There was a statistically reliable effect of modality (F(4,400) = 17.03, p &lt; 0.0001)”</p>
+<p>Res.Df are the degrees of freedom. The more parameters you estimate, the more df you lose. Here, 400 is the number of independent datapoints. The more complex model estimates 4 coefficients more than the null model.</p>
+<p>You can also wrap anova() around the model name to automatically compare it to the null model – you don’t actually have to specify the null model.</p>
+</div>
+<div id="glance" class="section level3">
+<h3>glance()</h3>
+<pre class="r"><code>glance(senses_mdl)</code></pre>
+<pre><code>## # A tibble: 1 x 11
+##   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC deviance df.residual
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;       &lt;int&gt;
+## 1     0.146         0.137 0.266      17.0 6.62e-13     5  -35.6  83.3  107.     28.3         400</code></pre>
+<p>Since there is only one predictor here, we get the same output as with the anova. If it were more complicated, you would get the statistics for the full model with all predictors compared to a null model. Basically this asks “how well do all predictors together capture variance in the response?” or “assuming the full model and the null model perform equally well (the null hypothesis), how surprising is the amount of sample variance explained by the full model?”(186)</p>
+<p>For all pairwise differences, you can use the emmeans package (see Bodo p.186-188 for info and criticism). On the other hand, if only one of the comparison levels is theoretically motivated, you can lump some levels together and thus perform only one test (p.188-200).</p>
+</div>
+<div id="predict" class="section level3">
+<h3>predict()</h3>
+<pre class="r"><code>newpreds &lt;- tibble(Modality = sort(unique(senses$Modality)))
+
+sense_preds &lt;- predict(senses_mdl, newpreds, interval = &quot;confidence&quot;) #automatically returns CIs
+
+sense_preds &lt;- cbind(newpreds, sense_preds) #adds the label back in
+
+sense_preds</code></pre>
+<pre><code>##   Modality      fit      lwr      upr
+## 1    Sight 5.579663 5.542518 5.616808
+## 2    Smell 5.471012 5.366477 5.575546
+## 3    Sound 5.405193 5.341338 5.469047
+## 4    Taste 5.808124 5.731884 5.884364
+## 5    Touch 5.534435 5.471052 5.597818</code></pre>
+</div>
+<div id="plot-means-and-cis" class="section level3">
+<h3>Plot means and CIs</h3>
+<pre class="r"><code>sense_order &lt;- arrange(sense_preds, fit)$Modality
+sense_preds &lt;- mutate(sense_preds, Modality = factor(Modality, levels = sense_order))
+
+ggplot(aes(x=Modality, y=fit), data=sense_preds) +
+  geom_point() +
+  geom_errorbar(aes(ymin=lwr, ymax=upr)) #formatting suggestions p194</code></pre>
+<p><img src="inferential_stats_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+</div>
+<div id="plotting-continuous-predictors" class="section level2">
+<h2>Plotting continuous predictors</h2>
+<pre class="r"><code>ELP  &lt;- read_csv(&quot;data/ELP_frequency.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Word = col_character(),
+##   Freq = col_double(),
+##   RT = col_double()
+## )</code></pre>
+<pre class="r"><code>ELP &lt;- ELP %&gt;% 
+  mutate(Log10Freq = log10(Freq))
+
+ELP_mdl &lt;- lm(RT ~ Log10Freq, ELP)
+
+#generate predictions
+newdata &lt;- tibble(Log10Freq = seq(0,5,0.01))
+preds &lt;- predict(ELP_mdl, newdata, interval = &quot;confidence&quot;)
+
+preds &lt;- cbind(newdata, preds) #add labels back in
+
+preds</code></pre>
+<pre><code>##     Log10Freq      fit      lwr      upr
+## 1        0.00 870.9054 780.8520 960.9588
+## 2        0.01 870.2026 780.4127 959.9926
+## 3        0.02 869.4999 779.9732 959.0266
+## 4        0.03 868.7971 779.5334 958.0608
+## 5        0.04 868.0943 779.0935 957.0952
+## 6        0.05 867.3916 778.6534 956.1298
+## 7        0.06 866.6888 778.2131 955.1646
+## 8        0.07 865.9860 777.7725 954.1996
+## 9        0.08 865.2833 777.3318 953.2348
+## 10       0.09 864.5805 776.8908 952.2702
+## 11       0.10 863.8777 776.4496 951.3059
+## 12       0.11 863.1750 776.0082 950.3418
+## 13       0.12 862.4722 775.5666 949.3778
+## 14       0.13 861.7695 775.1247 948.4142
+## 15       0.14 861.0667 774.6827 947.4507
+## 16       0.15 860.3639 774.2404 946.4874
+## 17       0.16 859.6612 773.7979 945.5244
+## 18       0.17 858.9584 773.3551 944.5616
+## 19       0.18 858.2556 772.9122 943.5991
+## 20       0.19 857.5529 772.4690 942.6368
+## 21       0.20 856.8501 772.0255 941.6747
+## 22       0.21 856.1473 771.5818 940.7128
+## 23       0.22 855.4446 771.1379 939.7512
+## 24       0.23 854.7418 770.6938 938.7899
+## 25       0.24 854.0390 770.2494 937.8287
+## 26       0.25 853.3363 769.8047 936.8679
+## 27       0.26 852.6335 769.3598 935.9072
+## 28       0.27 851.9307 768.9147 934.9468
+## 29       0.28 851.2280 768.4692 933.9867
+## 30       0.29 850.5252 768.0236 933.0269
+## 31       0.30 849.8225 767.5777 932.0672
+## 32       0.31 849.1197 767.1315 931.1079
+## 33       0.32 848.4169 766.6850 930.1488
+## 34       0.33 847.7142 766.2383 929.1900
+## 35       0.34 847.0114 765.7914 928.2314
+## 36       0.35 846.3086 765.3441 927.2731
+## 37       0.36 845.6059 764.8966 926.3151
+## 38       0.37 844.9031 764.4488 925.3574
+## 39       0.38 844.2003 764.0007 924.3999
+## 40       0.39 843.4976 763.5524 923.4428
+## 41       0.40 842.7948 763.1037 922.4859
+## 42       0.41 842.0920 762.6548 921.5293
+## 43       0.42 841.3893 762.2056 920.5730
+## 44       0.43 840.6865 761.7561 919.6169
+## 45       0.44 839.9837 761.3063 918.6612
+## 46       0.45 839.2810 760.8562 917.7058
+## 47       0.46 838.5782 760.4058 916.7506
+## 48       0.47 837.8755 759.9551 915.7958
+## 49       0.48 837.1727 759.5041 914.8413
+## 50       0.49 836.4699 759.0528 913.8871
+## 51       0.50 835.7672 758.6011 912.9332
+## 52       0.51 835.0644 758.1492 911.9796
+## 53       0.52 834.3616 757.6969 911.0263
+## 54       0.53 833.6589 757.2444 910.0734
+## 55       0.54 832.9561 756.7914 909.1208
+## 56       0.55 832.2533 756.3382 908.1685
+## 57       0.56 831.5506 755.8846 907.2165
+## 58       0.57 830.8478 755.4307 906.2649
+## 59       0.58 830.1450 754.9765 905.3136
+## 60       0.59 829.4423 754.5219 904.3627
+## 61       0.60 828.7395 754.0670 903.4120
+## 62       0.61 828.0368 753.6117 902.4618
+## 63       0.62 827.3340 753.1561 901.5119
+## 64       0.63 826.6312 752.7001 900.5623
+## 65       0.64 825.9285 752.2438 899.6132
+## 66       0.65 825.2257 751.7871 898.6643
+## 67       0.66 824.5229 751.3300 897.7159
+## 68       0.67 823.8202 750.8725 896.7678
+## 69       0.68 823.1174 750.4147 895.8201
+## 70       0.69 822.4146 749.9565 894.8727
+## 71       0.70 821.7119 749.4980 893.9258
+## 72       0.71 821.0091 749.0390 892.9792
+## 73       0.72 820.3063 748.5797 892.0330
+## 74       0.73 819.6036 748.1199 891.0872
+## 75       0.74 818.9008 747.6598 890.1418
+## 76       0.75 818.1980 747.1993 889.1968
+## 77       0.76 817.4953 746.7383 888.2522
+## 78       0.77 816.7925 746.2770 887.3081
+## 79       0.78 816.0898 745.8152 886.3643
+## 80       0.79 815.3870 745.3530 885.4209
+## 81       0.80 814.6842 744.8904 884.4780
+## 82       0.81 813.9815 744.4274 883.5355
+## 83       0.82 813.2787 743.9640 882.5934
+## 84       0.83 812.5759 743.5001 881.6518
+## 85       0.84 811.8732 743.0357 880.7106
+## 86       0.85 811.1704 742.5709 879.7699
+## 87       0.86 810.4676 742.1057 878.8295
+## 88       0.87 809.7649 741.6400 877.8897
+## 89       0.88 809.0621 741.1739 876.9503
+## 90       0.89 808.3593 740.7073 876.0114
+## 91       0.90 807.6566 740.2402 875.0729
+## 92       0.91 806.9538 739.7727 874.1349
+## 93       0.92 806.2510 739.3047 873.1974
+## 94       0.93 805.5483 738.8362 872.2604
+## 95       0.94 804.8455 738.3672 871.3239
+## 96       0.95 804.1428 737.8977 870.3878
+## 97       0.96 803.4400 737.4277 869.4523
+## 98       0.97 802.7372 736.9572 868.5172
+## 99       0.98 802.0345 736.4862 867.5827
+## 100      0.99 801.3317 736.0147 866.6487
+## 101      1.00 800.6289 735.5427 865.7152
+## 102      1.01 799.9262 735.0701 864.7822
+## 103      1.02 799.2234 734.5970 863.8498
+## 104      1.03 798.5206 734.1234 862.9179
+## 105      1.04 797.8179 733.6492 861.9865
+## 106      1.05 797.1151 733.1745 861.0557
+## 107      1.06 796.4123 732.6992 860.1254
+## 108      1.07 795.7096 732.2234 859.1957
+## 109      1.08 795.0068 731.7470 858.2666
+## 110      1.09 794.3040 731.2700 857.3381
+## 111      1.10 793.6013 730.7925 856.4101
+## 112      1.11 792.8985 730.3144 855.4827
+## 113      1.12 792.1958 729.8356 854.5559
+## 114      1.13 791.4930 729.3563 853.6297
+## 115      1.14 790.7902 728.8764 852.7041
+## 116      1.15 790.0875 728.3958 851.7791
+## 117      1.16 789.3847 727.9147 850.8547
+## 118      1.17 788.6819 727.4329 849.9310
+## 119      1.18 787.9792 726.9505 849.0078
+## 120      1.19 787.2764 726.4674 848.0854
+## 121      1.20 786.5736 725.9838 847.1635
+## 122      1.21 785.8709 725.4994 846.2423
+## 123      1.22 785.1681 725.0144 845.3218
+## 124      1.23 784.4653 724.5287 844.4020
+## 125      1.24 783.7626 724.0424 843.4828
+## 126      1.25 783.0598 723.5554 842.5643
+## 127      1.26 782.3571 723.0677 841.6464
+## 128      1.27 781.6543 722.5793 840.7293
+## 129      1.28 780.9515 722.0901 839.8129
+## 130      1.29 780.2488 721.6003 838.8972
+## 131      1.30 779.5460 721.1098 837.9822
+## 132      1.31 778.8432 720.6185 837.0679
+## 133      1.32 778.1405 720.1265 836.1544
+## 134      1.33 777.4377 719.6338 835.2416
+## 135      1.34 776.7349 719.1403 834.3296
+## 136      1.35 776.0322 718.6460 833.4183
+## 137      1.36 775.3294 718.1510 832.5078
+## 138      1.37 774.6266 717.6552 831.5980
+## 139      1.38 773.9239 717.1587 830.6891
+## 140      1.39 773.2211 716.6613 829.7809
+## 141      1.40 772.5183 716.1631 828.8736
+## 142      1.41 771.8156 715.6641 827.9670
+## 143      1.42 771.1128 715.1643 827.0613
+## 144      1.43 770.4101 714.6637 826.1564
+## 145      1.44 769.7073 714.1623 825.2523
+## 146      1.45 769.0045 713.6600 824.3491
+## 147      1.46 768.3018 713.1568 823.4467
+## 148      1.47 767.5990 712.6528 822.5452
+## 149      1.48 766.8962 712.1479 821.6446
+## 150      1.49 766.1935 711.6421 820.7449
+## 151      1.50 765.4907 711.1354 819.8460
+## 152      1.51 764.7879 710.6278 818.9480
+## 153      1.52 764.0852 710.1193 818.0510
+## 154      1.53 763.3824 709.6099 817.1549
+## 155      1.54 762.6796 709.0996 816.2597
+## 156      1.55 761.9769 708.5883 815.3655
+## 157      1.56 761.2741 708.0760 814.4722
+## 158      1.57 760.5713 707.5628 813.5799
+## 159      1.58 759.8686 707.0487 812.6885
+## 160      1.59 759.1658 706.5335 811.7981
+## 161      1.60 758.4631 706.0173 810.9088
+## 162      1.61 757.7603 705.5002 810.0204
+## 163      1.62 757.0575 704.9820 809.1330
+## 164      1.63 756.3548 704.4628 808.2467
+## 165      1.64 755.6520 703.9426 807.3614
+## 166      1.65 754.9492 703.4213 806.4772
+## 167      1.66 754.2465 702.8989 805.5940
+## 168      1.67 753.5437 702.3755 804.7119
+## 169      1.68 752.8409 701.8510 803.8308
+## 170      1.69 752.1382 701.3254 802.9509
+## 171      1.70 751.4354 700.7987 802.0721
+## 172      1.71 750.7326 700.2709 801.1944
+## 173      1.72 750.0299 699.7420 800.3178
+## 174      1.73 749.3271 699.2119 799.4423
+## 175      1.74 748.6243 698.6807 798.5680
+## 176      1.75 747.9216 698.1483 797.6949
+## 177      1.76 747.2188 697.6147 796.8229
+## 178      1.77 746.5161 697.0800 795.9522
+## 179      1.78 745.8133 696.5440 795.0826
+## 180      1.79 745.1105 696.0068 794.2142
+## 181      1.80 744.4078 695.4684 793.3471
+## 182      1.81 743.7050 694.9288 792.4812
+## 183      1.82 743.0022 694.3879 791.6165
+## 184      1.83 742.2995 693.8458 790.7531
+## 185      1.84 741.5967 693.3024 789.8910
+## 186      1.85 740.8939 692.7577 789.0302
+## 187      1.86 740.1912 692.2117 788.1707
+## 188      1.87 739.4884 691.6644 787.3125
+## 189      1.88 738.7856 691.1157 786.4556
+## 190      1.89 738.0829 690.5658 785.6000
+## 191      1.90 737.3801 690.0144 784.7458
+## 192      1.91 736.6774 689.4617 783.8930
+## 193      1.92 735.9746 688.9077 783.0415
+## 194      1.93 735.2718 688.3522 782.1914
+## 195      1.94 734.5691 687.7953 781.3428
+## 196      1.95 733.8663 687.2371 780.4955
+## 197      1.96 733.1635 686.6774 779.6497
+## 198      1.97 732.4608 686.1162 778.8053
+## 199      1.98 731.7580 685.5536 777.9624
+## 200      1.99 731.0552 684.9895 777.1209
+## 201      2.00 730.3525 684.4240 776.2810
+## 202      2.01 729.6497 683.8569 775.4425
+## 203      2.02 728.9469 683.2884 774.6055
+## 204      2.03 728.2442 682.7183 773.7701
+## 205      2.04 727.5414 682.1467 772.9362
+## 206      2.05 726.8386 681.5735 772.1038
+## 207      2.06 726.1359 680.9988 771.2730
+## 208      2.07 725.4331 680.4224 770.4438
+## 209      2.08 724.7304 679.8445 769.6162
+## 210      2.09 724.0276 679.2650 768.7901
+## 211      2.10 723.3248 678.6839 767.9657
+## 212      2.11 722.6221 678.1012 767.1429
+## 213      2.12 721.9193 677.5168 766.3218
+## 214      2.13 721.2165 676.9307 765.5023
+## 215      2.14 720.5138 676.3430 764.6845
+## 216      2.15 719.8110 675.7536 763.8684
+## 217      2.16 719.1082 675.1625 763.0539
+## 218      2.17 718.4055 674.5697 762.2412
+## 219      2.18 717.7027 673.9752 761.4302
+## 220      2.19 716.9999 673.3790 760.6209
+## 221      2.20 716.2972 672.7810 759.8134
+## 222      2.21 715.5944 672.1812 759.0076
+## 223      2.22 714.8916 671.5797 758.2036
+## 224      2.23 714.1889 670.9764 757.4014
+## 225      2.24 713.4861 670.3713 756.6010
+## 226      2.25 712.7834 669.7644 755.8023
+## 227      2.26 712.0806 669.1556 755.0056
+## 228      2.27 711.3778 668.5451 754.2106
+## 229      2.28 710.6751 667.9326 753.4175
+## 230      2.29 709.9723 667.3184 752.6262
+## 231      2.30 709.2695 666.7022 751.8368
+## 232      2.31 708.5668 666.0842 751.0493
+## 233      2.32 707.8640 665.4643 750.2637
+## 234      2.33 707.1612 664.8425 749.4800
+## 235      2.34 706.4585 664.2188 748.6982
+## 236      2.35 705.7557 663.5931 747.9183
+## 237      2.36 705.0529 662.9656 747.1403
+## 238      2.37 704.3502 662.3360 746.3643
+## 239      2.38 703.6474 661.7046 745.5903
+## 240      2.39 702.9446 661.0711 744.8182
+## 241      2.40 702.2419 660.4357 744.0481
+## 242      2.41 701.5391 659.7983 743.2799
+## 243      2.42 700.8364 659.1589 742.5138
+## 244      2.43 700.1336 658.5175 741.7497
+## 245      2.44 699.4308 657.8741 740.9875
+## 246      2.45 698.7281 657.2287 740.2274
+## 247      2.46 698.0253 656.5813 739.4693
+## 248      2.47 697.3225 655.9318 738.7133
+## 249      2.48 696.6198 655.2802 737.9593
+## 250      2.49 695.9170 654.6267 737.2074
+##  [ reached &#39;max&#39; / getOption(&quot;max.print&quot;) -- omitted 251 rows ]</code></pre>
+<pre class="r"><code>ggplot(aes(x=Log10Freq, y=fit), data=preds) +
+  geom_ribbon(aes(ymin=lwr, ymax=upr), fill=&quot;grey&quot;, alpha=0.5) +
+  geom_line() +
+  geom_text(aes(y=RT, label=Word), data=ELP) +
+  theme_minimal()</code></pre>
+<p><img src="inferential_stats_files/figure-html/unnamed-chunk-10-1.png" width="672" /> The grey region shows the model lines you would be expected to get 95% of the time when sampling from the same population.</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
