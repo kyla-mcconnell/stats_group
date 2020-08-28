@@ -248,7 +248,7 @@ preds <- predict(ELP_mdl, newdata, interval = "confidence")
 
 preds <- cbind(newdata, preds) #add labels back in
 
-preds
+head(preds)
 ```
 
 ```{r}
