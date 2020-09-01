@@ -4,6 +4,7 @@ title: "Schedule"
 <font size=4>
 
 ![](img/calendar.jpg)
+ 
 
 ### Past and upcoming topics
 - 15.05.19: Principles of frequentist statistics (Field ch. 1)
@@ -35,6 +36,7 @@ title: "Schedule"
 - 29.10.20: Mixed effects models, continued (TBD) - ONLINE
 
 </font>
+
 <font size=2>
 
 
@@ -54,5 +56,7 @@ Leek, J. T., & Peng, R. D. (2015). Statistics: P values are just the tip of the 
 Levshina, N. (2015). How to do linguistics with R: Data exploration and statistical analysis. John Benjamins Publishing Company.
 
 Winter, B. (2013). Linear models and linear mixed effects models in R with linguistic applications. Retrieved from http://arxiv.org/pdf/1308.5499 
+
+Winter, B. (2019). Statistics for linguists: An introduction using R. Routledge.
 
 </font>

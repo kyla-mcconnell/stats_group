@@ -2,9 +2,10 @@
 title: "Inferential Statistics"
 author: "Kyla McConnell"
 date: "8/27/2020"
-html_notebook:
-  toc: true
-  theme: cosmo
+output:
+ html_notebook:
+    toc: true
+    theme: cosmo
 ---
 
 Based on Chapters 9 - 11 of [Winter 2020 - Statistics for Linguists](https://www.amazon.de/Statistics-Linguists-Introduction-Using-R/dp/113805609X/ref=sxts_sxwds-bia-wc-drs1_0?cv_ct_cx=Statistics+for+Linguists%3A+An+Introduction+Using+R&dchild=1&keywords=Statistics+for+Linguists%3A+An+Introduction+Using+R&pd_rd_i=113805609X&pd_rd_r=ad49314f-6c56-4dfd-af51-df73083c56ff&pd_rd_w=FT3O0&pd_rd_wg=1F20M&pf_rd_p=4550c966-ade8-45b3-8233-8740fa4921e3&pf_rd_r=KHZ507X5ZP0TFNMBMRTJ&psc=1&qid=1598614090&sr=1-1-95fb4f3c-fa15-48dc-bab1-67b29ab0ca13).

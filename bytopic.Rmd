@@ -7,6 +7,7 @@ title: "Notes and resources by topic"
 
 The following index of notes is meant as a helpful reference guide. Nearly all materials were taken from another resource, which is given at the top of each page. If you own these resources and don't wish for us to share the notes we've taken on them, please let us know and we will quickly remove them!
 
+### Notes
 
 - Principles of frequentist statistics
 - Data wrangling
@@ -20,6 +21,36 @@ The following index of notes is meant as a helpful reference guide. Nearly all m
 - Tests of independence: chi-square
 - Regression
 - Logistic Regression
-- [Inferential statistics and plotting models](inferential_stats.html)
+- [Inferential statistics and plotting for regression models](inferential_stats.html)
+
+### Exercises
+
+- [Regression review with Tidy Tuesday coffee data](https://github.com/kyla-mcconnell/stats_group_resources/blob/master/Regression_TidyTues_Coffee.Rmd)
+
+</font>
+
+
+
+<font size=2>
+
+
+
+
+*Sources*
+
+Boehmke, B., & Greenwell, B. M. (2019). Hands-on machine learning with R. CRC Press.
+
+Field, A., Miles, J., & Field, Z. (2012). Discovering statistics using R. Los Angeles, London, New Delhi, Singapore, Washington, DC: Sage.
+
+Simmons, J. P., Nelson, L. D., & Simonsohn, U. (2011). False-positive psychology: Undisclosed flexibility in data collection and analysis allows presenting anything as significant. Psychological Science, 22(11), 1359–1366.
+https://doi.org/10.1177/0956797611417632
+
+Leek, J. T., & Peng, R. D. (2015). Statistics: P values are just the tip of the iceberg. Nature, 520(7549), 612. https://doi.org/10.1038/520612a
+
+Levshina, N. (2015). How to do linguistics with R: Data exploration and statistical analysis. John Benjamins Publishing Company.
+
+Winter, B. (2013). Linear models and linear mixed effects models in R with linguistic applications. Retrieved from http://arxiv.org/pdf/1308.5499 
+
+Winter, B. (2019). Statistics for linguists: An introduction using R. Routledge.
 
 </font>

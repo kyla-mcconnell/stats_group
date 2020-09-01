@@ -481,10 +481,10 @@ anova(senses_null, senses_mdl)</code></pre>
 <div id="glance" class="section level3">
 <h3>glance()</h3>
 <pre class="r"><code>glance(senses_mdl)</code></pre>
-<pre><code>## # A tibble: 1 x 11
-##   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC deviance df.residual
-##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;       &lt;int&gt;
-## 1     0.146         0.137 0.266      17.0 6.62e-13     5  -35.6  83.3  107.     28.3         400</code></pre>
+<pre><code>## # A tibble: 1 x 12
+##   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC deviance df.residual  nobs
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;       &lt;int&gt; &lt;int&gt;
+## 1     0.146         0.137 0.266      17.0 6.62e-13     4  -35.6  83.3  107.     28.3         400   405</code></pre>
 <p>Since there is only one predictor here, we get the same output as with the anova. If it were more complicated, you would get the statistics for the full model with all predictors compared to a null model. Basically this asks “how well do all predictors together capture variance in the response?” or “assuming the full model and the null model perform equally well (the null hypothesis), how surprising is the amount of sample variance explained by the full model?”(186)</p>
 <p>For all pairwise differences, you can use the emmeans package (see Bodo p.186-188 for info and criticism). On the other hand, if only one of the comparison levels is theoretically motivated, you can lump some levels together and thus perform only one test (p.188-200).</p>
 </div>
