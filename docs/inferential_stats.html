@@ -380,19 +380,9 @@ $(document).ready(function () {
 <pre class="r"><code>library(tidyverse)
 library(broom)
 
-icon &lt;- read_csv(&quot;data/perry_winter_2017_iconicity.csv&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   Word = col_character(),
-##   POS = col_character(),
-##   SER = col_double(),
-##   CorteseImag = col_double(),
-##   Conc = col_double(),
-##   Syst = col_double(),
-##   Freq = col_double(),
-##   Iconicity = col_double()
-## )</code></pre>
-<pre class="r"><code>icon &lt;- icon %&gt;% 
+icon &lt;- read_csv(&quot;data/perry_winter_2017_iconicity.csv&quot;)
+
+icon &lt;- icon %&gt;% 
   mutate(SER_z = scale(SER),
          CorteseImag_z =  scale(CorteseImag),
          Syst_z = scale(Syst),

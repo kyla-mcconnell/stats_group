@@ -28,6 +28,7 @@ d = |.02| -> small effect
 d = |.05| -> medium effect
 d = |.08| -> large effect
 
+
 ### Pearson's r 
 
 r = s^2x,y / sx sy
@@ -38,7 +39,9 @@ Covariance measures the x-distance of each data point from the x-mean and the y-
 
 Measure of correlation and/or effect size
 
+
 ## Standard errors and confidence intervals
+
 
 ### Standard error 
 
@@ -48,6 +51,7 @@ Considers variability in the data (standard deviation) and sample size (root(N))
 
 Differs to standard deviation because it considers the sample size. Thus it is is the population-level estimate/equivalent of the sample-level standard error.
 
+
 ### Confidence interval
 
 Confidence intervals show 1.96 standard errors above and below the mean. 1.96 is derived from the 0.05 significance level standard in frequentist statistics. 
@@ -56,7 +60,9 @@ CI = [x̅ - 1.96 * SE, x̅ + 1.96 * SE]
 
 Confidence intervals will include the true population mean 95% of the time. 
 
+
 ## Significance
+
 
 ### Null hypothesis 
 
@@ -66,6 +72,7 @@ i.e. Mean of group one = mean of group two, there is no difference between group
 The null hypothesis cannot be found true or false. What you measure is the current data's incompatibility with the null hypothesis. 
 
 If you find evidence for the null hypothesis, this does not mean that there is no effect (especially, for example, your sample size is small)
+
 
 ### t-statistic
 
@@ -79,9 +86,11 @@ Considers magnitude of the effect (numerator grows if the difference in group me
 
 t-statistics can be used to compute p-values. The t-distribution is similar to the normal distribution, just with thicker tails. A 0.05 significance level computes to about t = |1.98|
 
+
 ### p-values
 
 p-values do not measure the likelihood of the null hypothesis being true or the strength of an effect. 
+
 
 ### Type I and Type II error
 
@@ -96,6 +105,7 @@ Power is increased by having a large sample size, decreasing variability in the 
 
 Type M error: error in estimating the magnitude of an effect (i.e. much larger than it really is), often caused by small sample sizes
 Type S error: "failure to capture the correct sign of an effect", often caused by small sample sizes
+
 
 ## Multiple testing
 
@@ -114,13 +124,15 @@ Bonferonni correction: Divide the alpha level by the number of tests. If it is c
 p.adjust(0.03, method="bonferroni", n=2)
 ```
 
+
 ### Stopping rules
 
 If the null hypothesis is true, p-values are uniformly distributed from 0 to 1, so any p-value is equally as likely as any other. 
 
+
 #Application to modeling
 
-```{r}
+```{r, message=FALSE, warning=FALSE, error=FALSE}
 library(tidyverse)
 library(broom)
 
@@ -145,9 +157,10 @@ Remember what the p-value means: how likely/expected it is that you would find a
 
 Suggestion on how to write up: "SER was positively associated with  iconicity (+0.53, SE = 0.04, p < 0.001)" and "for each inncnrease inn nsensory experience rating by one standard deviation, iconicity ratings increased by 0.52 (b = 0.53, SE = 0.04, p < 0.001)".
 
+
 ###  Dot and whisker plot  
 
-```{r}
+```{r, warning=FALSE, error=FALSE}
 mycoefs <- tidy(icon_mdl_z, conf.int = TRUE) %>%  #conf.int incluseds 95% conf. intervals  in output
   filter(term != "(Intercept)") 
 
@@ -164,9 +177,10 @@ ggplot(aes(x = term, y = estimate), data = mycoefs) +
   theme_minimal()
 ```
 
+
 ### Multilevel categorical predictors
 
-```{r}
+```{r, warning=FALSE, error=FALSE}
 senses <- read_csv("data/winter_2016_senses_valence.csv")
 
 senses_mdl <- lm(Val ~ Modality, data = senses)
@@ -184,7 +198,7 @@ Reference level: Sight
 Thus, p-values reflect H0 that the difference between Sight and the given level is 0. Thus, we are missing a lot of info here.
 
 Compare to null model:
-```{r}
+```{r, warning=FALSE, error=FALSE}
 senses_null <- lm(Val ~ 1, data = senses) #1 is a placeholder for intercept only
 
 anova(senses_null, senses_mdl)
@@ -200,6 +214,7 @@ Res.Df are the degrees of freedom. The more parameters you estimate, the more df
 
 You can also wrap anova() around the model name to automatically compare it to the null model -- you don't actually have to specify the null model.
 
+
 ### glance()
 
 ```{r}
@@ -209,6 +224,7 @@ glance(senses_mdl)
 Since there is only one predictor here, we get the same output as with the anova. If it were more complicated, you would get the statistics for the full model with all predictors compared to a null model. Basically this asks "how well do all predictors together capture variance in the response?" or "assuming the full model and the null model perform equally well (the null hypothesis), how surprising is the amount of sample variance explained by the full model?"(186)
 
 For all pairwise differences, you can use the emmeans package (see Bodo p.186-188 for info and criticism). On the other hand, if only one of the comparison levels is theoretically motivated, you can lump some levels together and thus perform only one test (p.188-200).
+
 
 ### predict()
 
@@ -222,6 +238,7 @@ sense_preds <- cbind(newpreds, sense_preds) #adds the label back in
 sense_preds
 ```
 
+
 ### Plot means and CIs
 
 ```{r}
@@ -232,6 +249,7 @@ ggplot(aes(x=Modality, y=fit), data=sense_preds) +
   geom_point() +
   geom_errorbar(aes(ymin=lwr, ymax=upr)) #formatting suggestions p194
 ```
+
 
 ## Plotting continuous predictors
 

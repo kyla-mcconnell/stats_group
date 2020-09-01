@@ -42,6 +42,7 @@ title: "Schedule"
 
 
 
+
 *Sources*
 
 Boehmke, B., & Greenwell, B. M. (2019). Hands-on machine learning with R. CRC Press.

@@ -7,6 +7,8 @@ title: "Notes and resources by topic"
 
 The following index of notes is meant as a helpful reference guide. Nearly all materials were taken from another resource, which is given at the top of each page. If you own these resources and don't wish for us to share the notes we've taken on them, please let us know and we will quickly remove them!
 
+
+
 ### Notes
 
 - Principles of frequentist statistics
@@ -23,15 +25,19 @@ The following index of notes is meant as a helpful reference guide. Nearly all m
 - Logistic Regression
 - [Inferential statistics and plotting for regression models](inferential_stats.html)
 
+
+
 ### Exercises
 
 - [Regression review with Tidy Tuesday coffee data](https://github.com/kyla-mcconnell/stats_group_resources/blob/master/Regression_TidyTues_Coffee.Rmd)
+  - [SOLUTION](regression_solution.html)
 
 </font>
 
 
 
 <font size=2>
+
 
 
 
