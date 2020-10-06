@@ -1,0 +1,155 @@
+---
+title: "Reading Notes - Winter Ch.5"
+author: "Hanna Mahler"
+date: "15 5 2020"
+output: html_document
+---
+
+# Reading Notes - Winter Chapter 5 "Correlation, Linear, and Nonlinear Transformations"
+
+## 5.1 Centering
+
+- "A linear transformation involves addition, subtraction, multiplication, or division with a constant value." This does not change the relationship between the original numbers, it mererly affects the unit of the axis!
+- linear transformations are helpful for more interpretable metrics (e.g. change from milliseconds to seconds)
+- "centring" is a type of linear transformation, often applied to continuous predictor variables: "To center a predictor variable, subtract the mean of that predictor variable from each data point." -> this changes the value of the intercept, it is now the predicted y-value for the mean of x. (the slope is not affected by centering)
+- centering often helps to make the intercept meaningful, especially with predictors that have no value for zero (such as height or weight)
+
+## 5.2 Standardizing
+
+- "standardizing"/"Z-scoring" is another type of linear transformation
+- "For standardizing, the centred variable is divided by the standard deviation of the sample"
+- "standardization involves re-expressing the data in terms of how many standard deviations they are away from the mean. The resultant numbers are in 'standard units', often represented by letter z."
+
+## 5.3 Correlation
+
+- one can also standardize both the response and the predictor variable and fit a regression model to them: "the corresponding regression model will estimate how much change in y standard units results from a corresponding change in x standard units" -> the slope of this regression model is called the "correlation coefficient" or "Pearson's r"
+- "Person's r is a standardized metric of how much two variables are correlated with each other", it ranges between -1 and 1.
+- If y increases as x increases, the correlation coefficient is positive. If y decreases as x increases, the correlation coefficient is negative. The farther away from zero, the stronger the correlation. 
+
+## 5.4 Using Logarithms to Describe Magnitudes
+
+- in contrast to linear transformations, non-linear transformations (such as this one) affect the relations between data points
+- common problem (especially in linguistic data: positive skew) -> non-linear transformations can make a distribution more normal and reduce the influence of very large values
+- most common non-linear transformation: logarithm (inverse of exponential), which has a 'compressing' effect on the data (it affects larger numbers more)
+- in R, use log() and ^2 for the natural logarithm and exponentiation
+
+```{r}
+RTs = c(600, 650, 700, 1000, 4000)
+RTs
+
+logRTs = log(RTs)
+logRTs
+```
+
+## 5.5 Example: Response Durations and Word Frequency
+
+```{r, warnings = FALSE}
+library(tidyverse)
+library(broom)
+library(languageR)
+
+vector1 = c("thing","life","door","angel","beer","disgrace","kitten","bloke","mocha","gnome","nihilism","puffball")
+vector2 = c(55522,40629,14895,3992,3850,409,241,238,66,32,4,4)
+vector3 = c(622,520,507,637,587,705,611,794,725,810,764,878)
+ELP = tibble("Word" = vector1, "Freq" = vector2, "RT" = vector3)
+ELP
+
+ELP = mutate(ELP, Log10Freq = log10(Freq), LogRT = log(RT))
+ELP
+```
+
+- Visualising the effect of logarithmic transformation:
+
+```{r}
+ELP %>% ggplot(aes(x = Freq, y = LogRT, label = Word)) + geom_text() + geom_smooth(method = "lm") + theme_minimal()
+
+ELP %>% ggplot(aes(x = Log10Freq, y = LogRT, label = Word)) + geom_text() + geom_smooth(method = "lm") + theme_minimal()
+```
+
+- fitting a model with transformed values:
+
+```{r}
+ELP_mdl = lm(LogRT ~ Log10Freq, data = ELP)
+tidy(ELP_mdl)
+```
+- the resulting coefficient for frequency is negative: as frequency of a word increases, the reaction times are smaller
+
+- to obtain the predicted values, we first need to extract the intercept and slope, then enter the log-transformed x-value before re-converting the output to the original metric with the exp() function
+```{r}
+# extracting the intercept of the model:
+b0 = tidy(ELP_mdl)$estimate[1]
+# extracting the slope of the model:
+b1 = tidy(ELP_mdl)$estimate[2]
+
+logRT_10freq =  b0 + b1*1
+logRT_1000freq = b0 + b1*3
+exp(logRT_10freq)
+exp(logRT_1000freq)
+```
+
+## 5.6 Centering and Standardization in R
+
+- create a centred and a standardized column in the previous data frame
+```{r}
+ELP = mutate(ELP, Log10Freq_c = Log10Freq - mean(Log10Freq), Log10Freq_z = Log10Freq_c / sd(Log10Freq_c))
+select(ELP, Freq, Log10Freq, Log10Freq_c, Log10Freq_z)
+
+# alternatively, use the scale() function for standardizing and scale(scale = FALSE) for centering:
+ELP = mutate(ELP, Log10Freq_c = scale(Log10Freq, scale = FALSE), Log10Freq_z = scale(Log10Freq))
+```
+
+- fit a model based on the standardized/centred predictors
+```{r}
+ELP_mdl_c = lm(LogRT ~ Log10Freq_c, data = ELP)
+ELP_mdl_z = lm(LogRT ~ Log10Freq_z, data = ELP)
+tidy(ELP_mdl) %>% select(term, estimate)
+tidy(ELP_mdl_c) %>% select(term, estimate)
+# the intercept has changed
+tidy(ELP_mdl_z) %>% select(term, estimate)
+# the slope has changed
+
+# each model represents the same underlying correlation, check:
+glance(ELP_mdl)
+glance(ELP_mdl_c)
+glance(ELP_mdl_z)
+
+# calculate the correlation coefficient Pearson's r
+with(ELP, cor(Log10Freq, LogRT))
+# this is equal to the coefficient produced by a regression model using the z-scored predictor and response variables
+ELP_cor = lm(scale(LogRT) ~ -1 + Log10Freq_z, ELP)
+tidy(ELP_cor) %>% select(estimate)
+```
+
+## 5.7 Terminological Note on the Term 'Normalizing'
+
+- the term is used to refer to standardization or to nonlinear transformations
+
+## 5.9 Exercises
+
+- r = 1, r = 0.9, r = - 0.7
+- r = 0.3, r = 0, r = - 0.5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

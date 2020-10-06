@@ -1,0 +1,108 @@
+---
+title: "Mixed Models 1: Conceptual Introduction"
+author: Beke
+date: 28/9/2020
+---
+
+Based on ch. 14 "Mixed Models 1: Conceptual Introduction" in Winter, Bodo. 2020. *Statistics for Linguists: An Introduction Using R*. London: Routledge.
+
+```{r setup, include=FALSE}
+library(Matrix)
+library(lme4)
+```
+
+## 14.1 Introduction
+- mixed effects models are an extension of regression models
+- mixed effects models make it possible to model dependent data 
+
+## 14.2 The Independence Assumption
+- dependent data are for example two data points from one participant or of the same item 
+- if independence assumption is violated -> risk of Type 1 errors (false positives) (because if dependency of data points is not taken into account, sample size higher than it actually is ("artificially inflating the sample size", Winter 2019: 233), aka 'pseudoreplication', 'pooling fallacy')
+- repeated measures design (several data points from one participant) are common in various branches of Linguistics 
+
+## 14.3 Dealing with Non-Independence via Experimental Design and Averaging
+1) design study to minimise dependency of data points (each participant contributes only one data point)
+
+2) aggregating, average of data points for a participant (but information is lost, model will underestimate variation in data points if only average is taken)
+
+## 14.4 Mixed Models: Varying Intercepts and Varying Slopes
+- can deal with dependent data points 
+- using random effects -> 'random intercepts' and 'random slopes', or 'varying intercepts' and 'varying slopes'
+
+--> Figure 14.1 on p. 235
+![Figure 14.1](Figure 14.1.JPG)
+
+1) varying intercepts: estimating intercepts for each participant (dashed lines, e.g. different points where x = 0, e.g. response times Yasmeen faster = lower, Dan slower = higher), slopes are fixed --> parallel to average estimate (thick line), parallel for everyone, all with the same steepness and false same direction, e.g. all participants are estimated to get faster as they progress with the task
+
+Formula:
+y=beta0j+beta1*trial+error (each participant has a different intercept, beta0 for each j, ~j~ = participant, e.g. beta0 for ~j~ = 1 = intercept for Yasmeen) (no subindex j for slope beta1)
+
+2) varying slopes: varying intercepts + varying slopes, accounts for varying slopes for participants, e.g. different direction of slope (cf. dashed line for Dan), e.g. different participants becoming faster vs. slower throughout the task
+
+Formula:
+y=beta0j+beta1j*trial+error (beta1j not only beta1 as above, subindex ~j~ stands for participant, slope for specific participant, e.g. ~j~ = 1 = Yasmeen)  
+
+- mixed effects models are called like that because they 'mix' fixed effects and random effects
+
+- fixed effects = constant across experiments (individuals), they are repeatable, e.g. training effect, response time gets faster as experiment proceeds (in general irrespective of participants you sample), fixed effects "are assumed to have a predictable, non-idiosyncratic influence on the response variable that could be tested with new samples of speakers or words" (Winter 2019: 236), can be continuous or categorical
+
+- random effects = vary within individual (e.g. some individuals get slower as they progress with a task because they get tired), random effects are always categorical (concept of a group = categorical)
+
+## 14.5 More on Varying Intercepts and Varying Slopes
+--> Figure 14.2 on p. 237
+![Figure 14.2](Figure 14.2.JPG)
+
+
+a) simple linear regression: response duration ~ trial order, treats data points as if they were independent, residuals (one regression line is fitted and residuals = distance of each point from regression line)
+
+b) varying intercept, estimates different intercepts for different participants, lines of participants shifted upwards or downwards parallel to average estimate, conceptually assigning each participant a deviation score from population intercept, residuals plus intercept deviations, problem: assumes slopes are the same (no  differences between participants in trial order effect)
+
+c) varying intercept and varying slope, estimates different intercepts for each participant and different slopes for each participant, deviations from average slope, conceptually: fitting individual regression lines  for each participant, residuals plus intercept deviations and slope deviations
+
+Note that mixed models do not actually estimate one parameter per participant, but estimate variation around the specified random effect, e.g. if you allow for varying intercepts, you add a term that is the standard deviation of by-participant variation around the overall intercept.
+
+## 14.6 Interpreting Random Effects and Random Effects Correlations
+- most widely used package lme4 
+
+model<-lmer(RT~trial+(1+trial|participant))
+
+- RT~trial = fixed effects
+- (1+trial|participant) = random effect = by-participant varying intercept and slope for trial (1 = placeholder for intercept)
+
+
+Example output
+--> Table Winter 2019: 238-239
+
+![Table](Output.JPG)
+
+- Fixed effects: decrease in reaction time as experiment proceeds by 10ms, intercept = trial 0 = 1000ms
+
+- random effects: standard deviation = random effect estimated by model
+- by-participant varying intercept around average intercept (1000ms) = 36ms, apply 68%-95% rule -> 68% of participants lie within interval 964ms - 1036ms = average intercept -/+ 1 sd (1000-36 = 964, 1000+36 = 1036), 95% from 928ms - 1072ms = average intercept -/+ 2 sd 
+- by participant varying slopes = about 3ms, slope roughly -10, so 68% between -13 and -7 and 95% between -16 and -4 (offset from the average slope)
+- we discussed in one of previous sessions that 95% of data lie within 2 sds of the mean (in other words, we have talked about the 95% rule, which is more often mentioned than the 68% 1 sd rule)
+- corr = correlation for the random effects, -0.38 indicated higher intercepts (high intercept = in general a slow participant) had lower trial slopes (lower = faster), interpretation: slower participants had more opportunity to speed up, often interesting to plot random effects to find out about their interaction (visually, lines are not parallel, cf. last session)
+
+## 14.7 Specifying Mixed Effects Models: lme4 Syntax
+- lmer(x+(1|participant)) = by-participant varying intercepts, 1 = placeholder for intercept
+- lmer(x+(x|participant)) = by-participant varying intercepts and varying x slopes, with slope/intercept correlation
+- lmer(x+(x||participant)) = by-participant varying intercepts and varying x slopes, without slope/intercept correlation
+
+## 14.8 Reasoning About Your Mixed Model: The Importance of Varying Slopes
+- without varying slopes -> risk of Type 1 errors (false positives, see above)
+- in Linguistics, at the beginning only varying intercepts were applied but not varying slopes, then cautions about this procedure leading to overly complex random slope models, 'maximal models' (lower statistical power, against idea of parsimony in statistical modelling)
+- necessary to think about what random effects make sense for your analysis rather than only using varying intercepts or blindly adding varying slopes for all factors
+- critical question for varying slopes: "Does the relevant variable vary within individual?" (Winter 2019: 243) 
+- each term in your model should be theoretically justified
+
+## Some Additional Points We Discussed
+- Winter focuses on participant as random effect but other factors can also be random effects (e.g. item or text in Corpus Linguistics) 
+- you can also do mixed models with logistic regression
+- no random effects on continuous variables!
+- question: What if data are imbalanced?, e.g. we have one data point for one participant and 60 for another participant
+- tip: write out "What varies where?" for each fixed effect
+- comparing model with and without random effect with anova (for nested models)
+- you can visualise different intercepts and slopes for different participants with a caterpillar plot (we might talk about this in another session)
+- calculating correlation between random effects needs a large amount of data (you can take correlation out if model will not converge with "||")
+- programming language Julia: faster plus often more likely that you get a model that converges, you can put results back into R
+

@@ -1,0 +1,186 @@
+---
+title: "Revision_logistic_regression"
+author: "Hanna Mahler"
+date: "26 3 2020"
+output:
+  html_document:
+    df_print: paged
+---
+
+# 1. Logistic Regression: Revision
+
+[Most of the information in this script is based on Levshina (2015:253-276)]
+
+Logistic regression attempts to predict a categorical outcome from categorical and/or numeric predictors. If the outcome variable has only two possible values, we speak of "binomial" logistic regression, otherwise of "multinomial" logistic regression.
+There are two main methods to select predictor variables:
+- forced entry method: enter all predictors at once
+- stepwise methods:
+  - forward: add individual predictors one after another
+  - backward: remove predictors one after another
+The model output indicates how the probability of the outcome is influenced by the predictors (note the additional explanation below on log odds and ratios in 5.!). 
+
+# 2. The data set: Aspectual choice for verbs of bodily sensation
+
+This data set was collected to provide insights in the progressive alternation for verbs of bodily sensation ('hurt', 'ache', 'itch'). It is a cleaned sample retrieved from the BNC2014 (searching for the three verbs in both aspects).
+Quirk et al. (2010:203) claim that, for this sub-category, “the progressive and the nonprogressive are more or less interchangeable when referring to temporary states”. We will try to find out whether the progressive and non-progressive are really interchangeable or whether the aspectual choice might be influenced by one or more factors. 
+
+In our logistic regression model, the binary outcome variable will be the factor "progressive" or "non-progressive" for each utterance.
+Based on previous research, the following explanatory variables might be relevant:
+- Experiencer: since the progressive has a connotation of increased emotionality and subjectivity, we can expect it to occur more often if the person experiencing the sensation is the speaker ("1st") and not the interlocutor ("2nd") or another person ("3rd")
+- Subject group: semantic group of the grammatical subject
+- Presence of intensifier: due to the connotation of increased emotionality, intensifiers might occur more frequently with the progressive
+- Verb tense: can be present, past, or future
+- Duration: can be "temporary" or "long-term", the progressive should theoretically be favoured with temporary events
+- Pain at utterance time: due to the connotation of increased emotionality, we can expect the progressive to be favoured if the sensation described happens at the moment of utterance (instead of as part of a narration)
+- Word count of the utterace: does not really have any theoretical relevance, but we needed a numeric predictor for illustration ;-)
+
+# 1. Load libraries
+
+```{r setup, include=FALSE}
+library(languageR)
+library(ggplot2)
+library(readxl)
+library(rms)
+library(car)
+```
+
+# 2. Load data
+
+```{r}
+ING_data <- read_excel("C:/Users/mahle/Documents/Universität/01_Master/Unterlagen/Statistics/data/Revision_logistic_regression_data.xlsx")
+head(ING_data)
+```
+
+# 3. Prepare data
+
+```{r}
+ING_data$Verb = factor(ING_data$Verb, levels = c("HURT", "ACHE", "ITCH"))
+ING_data$Progressive = factor(ING_data$Progressive, levels = c("non-progressive", "progressive"))
+ING_data$Experiencer = factor(ING_data$Experiencer, levels = c("1st", "2nd", "3rd"))
+ING_data$Subject_group = factor(ING_data$Subject_group, levels = c("speaker", "body part", "human being", "action", "object"))
+ING_data$Intensifier_presence = factor(ING_data$Intensifier_presence, levels = c("NO", "YES"))
+ING_data$Verb_tense = factor(ING_data$Verb_tense, levels = c("present", "past", "future"))
+ING_data$Duration = factor(ING_data$Duration, levels = c("temporary", "long-term"))
+ING_data$Pain_at_UT = factor(ING_data$Pain_at_UT, levels = c("YES", "NO"))
+summary(ING_data)
+```
+
+Due to an unqueal distribution of values, there are some factors that need to be treated with caution. Which?
+-> Subject_group (few data points for speaker, human being, and object)
+-> Verb_tense (few data points for future)
+
+
+# 4. Perfom logistic regression model
+
+There are two formulas for performing a logistic regression model:
+lrm(outcome ~ predictor1 + predictor2, data = dataset, na.action = na.exclude)
+glm(outcome ~ predictor1 + predictor2, data = dataset, na.action = na.exlcude, family = "binomial")
+
+We will use both, as they have different properties attached to them which are needed for the testing of assumptions later on. 
+Here is a quick overview which function can be used for what:
+- lrm(): forced-entry only, provides model statistics, test assumption of mulitcollinearity, check for overfitting
+- glm(): for stepwise selection and forced-entry, for ANOVA comparisons, does not provide model statistics, test assumption of linearity, check for outliers and influential cases
+
+To see the output of the lrm() model, just type the model name, for the glm() model, use summary(model)
+
+## 4.1 Forced entry
+
+Use both functions to create two regression models, using the forced-entry method (so including all predictors).
+
+```{r}
+model.1 = lrm(Progressive ~ Experiencer + Subject_group + Intensifier_presence + Word_count + Verb_tense + 
+                Duration + Pain_at_UT , data = ING_data)
+model.1
+
+model.2 = glm(Progressive ~ Experiencer + Subject_group + Intensifier_presence + Word_count + 
+                Duration + Verb_tense + Pain_at_UT , data = ING_data, family = "binomial")
+summary(model.2)
+```
+
+## 4.2 Stepwise selection
+
+
+# 5. Evaluate the model
+
+The model lists the predictors with their "log odds ratio" in the first column and their significance in the last column. 
+The log odds ratio compares the odds of the outcome for each level of a predictor with the reference level (the level not given in the output). The log odds ratios are centred around zero, a positive value therefore indicates that the probability of the progressive occurring is higher.
+
+To obtain the simple odds (so the exact increase or decrease in likelihood), calculate the exponential value of the number given in the first column with exp(). For a good explanation of odds, log odds and odds ratio, see Levshina (2015:261)
+
+To see how good the model is, there are three values we can inspect in the output of the lrm() model:
+- The column "Model Likelihood Ratio Test" says whether the model is significant in general (so: better than a model with 0 predictors), the last value Pr(>chi2) should be smaller than 0.05
+- The right column on top indicates the goodness of fit of the model: 
+  - concordance index "C" ranges from from 0.5 to 1: acceptable between 0.7 and 0.8, excellent between 0.8 and 0.9, outstanding above 0.9
+  - R2:r anges from 0 (no predictive power) to 1 (perfect prediction)
+
+
+# 6. Check the assumptions
+
+## 6.1. Linearity
+
+There needs to be a linear relationship between any numeric predictor and the logit of the outcome variable. 
+To test this assumption, we need th glm() model.
+Use this function: crPlot(modelname, var = "Name of numeric predictor").
+If there are several numeric predictors, appy this function to every one of them individually. 
+The solid line should not deviate too much from the dashed line.
+```{r}
+crPlot(model.2, var = "Word_count")
+```
+
+(This is not really a great numeric predictor, just take this as an illustration... ^^)
+
+
+## 6.2. No multicollinearity between explantory variables
+
+To test this assumption, apply the function vif() to the lrm() model. 
+No value should exceed 5 (or others say 10).
+```{r}
+vif(model.1)
+```
+Is there a problem with multicollinearity here?  Which predictor should be excluded?
+
+
+## 6.3. Interdependece of errors
+
+Does not need to be tested, as the observations are independent from one another
+
+
+
+# 7. Check for outliers and overly influential cases
+
+Apply the function influencePlot() to the glm() model.
+Values above 2 and below -2 on the y-axis are problematic
+```{r}
+influencePlot(model.2)
+```
+
+Check the data points that appear to be outliers! Is there a valid reason that they should be excluded from the calculation?
+
+```{r}
+ING_data[c(41, 60, 113, 126),]
+```
+-> the hits are all valid utterances and not coding errors. There is no reason why they shouldn't be included in our model. 
+
+
+
+Following these checks, you could also check for overfitting and for potential interaction between the predictors, but we will cover these topics in more depth later. 
+
+
+
+### The end #### 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

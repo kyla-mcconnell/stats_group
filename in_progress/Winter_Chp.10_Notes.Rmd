@@ -1,0 +1,51 @@
+---
+title: "Winter_Chp.10"
+author: "Hanna Mahler"
+date: "31 8 2020"
+output: html_document
+---
+
+# Chapter 10: "Inferential Statistics 2: Issues in Significance Testing"
+
+## 10.1 Common Misinterpretations of p-Values
+The p-value is NOT the probability of the null-hypothesis being true!
+The p-value does NOT represent the strength of an effect!
+A p-value of below 0.05 does not justify believing more strongly in the hypothesis!
+
+## 10.2 Statistical Power and Type I, II, M, and S Errors
+Errors that can happen during hypothesis significance testing:
+- Type I error: obtaining a significant effect despite the null hypothesis being true
+- Type II error: not obtaining a significant effect despite the null hypothesis being false
+Statistical power is affected by three ingredients: effect size, variability, sample size. 
+- Type M error: an error in estimating the magnitude of an effect (e.g. assuming a bigger effect than what is actually present)
+- Type S error: a failure to capture the corregt sign of an effect (+/-)
+The goal: increase statistical power to minimize the risks of Type II, M, and S errors, can easily be done through collecting more data. 
+
+## 10.3 Multiple Testing
+The more significance tests are conducted, the higher the risk of Type I errors - "multiple testing problem". But there is also the option to correct for that by making significance tests more conservative (e.g. by applying the Bonferroni correction with the p.adjust() function).
+However, as this is a controversial topic, it is best to simply limit the number of significance tests that are being conducted.
+
+## 10.4 Stopping Rules
+When should you stop data collection? The decision should not be based on whether the existing amount of data reveals a significant result or not!
+Scientists should have a dedicated "stopping rule" and fixed sample size from the start (ideally based on a power analysis).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
